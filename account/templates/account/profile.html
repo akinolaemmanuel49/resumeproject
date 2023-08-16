@@ -1,0 +1,26 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/account/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="container">
+        <div class="profile-card">
+            <img class="profile-image"
+                src="{% if user_profile.image %}{{ user_profile.image.url }}{% else %}{% static 'path/to/default-image.jpg' %}{% endif %}"
+                alt="Profile Image">
+            <div class="profile-details">
+                <h1 class="h3 mb-3 fw-normal">User Profile Details</h1>
+                <p><strong>Name:</strong> {{ user_profile.first_name }} {{ user_profile.last_name }}</p>
+                <p><strong>Email:</strong> {{ user_profile.email }}</p>
+                <p><strong>Phone:</strong> {{ user_profile.phone }}</p>
+                <a href="{% url 'edit-profile-view' %}" class="btn btn-primary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+</main>
+{% endblock %}
