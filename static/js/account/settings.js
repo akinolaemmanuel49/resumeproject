@@ -1,8 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const emailField = document.getElementById("email");
     const changeEmailButton = document.getElementById("changeEmailButton");
     const changeEmailForm = document.getElementById("changeEmailForm");
+    const emailForm = document.getElementById("emailForm");
+    const updateEmailButton = document.getElementById("updateEmailButton");
     const changePasswordButton = document.getElementById("changePasswordButton");
     const changePasswordForm = document.getElementById("changePasswordForm");
+    const passwordForm = document.getElementById("passwordForm");
+    const updatePasswordButton = document.getElementById("updatePasswordButton");
+    const deleteAccountModalButton = document.getElementById("deleteAccountModalButton");
     const deleteAccountButton = document.getElementById("deleteAccountButton");
     const deleteAccountModal = document.getElementById("deleteAccountModal");
 
@@ -18,6 +24,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    updateEmailButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(emailForm);
+
+        fetch(emailForm.getAttribute('action'), {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                emailField.textContent = formData.get("new_email");
+                emailForm.reset();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    });
+
     changePasswordButton.addEventListener("click", function (event) {
         event.preventDefault();
 
@@ -30,7 +59,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    deleteAccountButton.addEventListener("click", function (event) {
+    updatePasswordButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(passwordForm);
+
+        fetch(passwordForm.getAttribute('action'), {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                passwordForm.reset();
+                window.location.replace("http://127.0.0.1:8000/account/login");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            })
+    })
+
+    deleteAccountModalButton.addEventListener("click", function (event) {
         event.preventDefault();
 
         // Display the delete account modal
@@ -49,12 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteAccountModal.style.display = "none";
     });
 
-    // Function to toggle form display
-    function toggleFormDisplay(formElement) {
-        if (formElement.style.display === "none") {
-            formElement.style.display = "block";
-        } else {
-            formElement.style.display = "none";
-        }
-    }
+    deleteAccountButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        window.location.replace("http://127.0.0.1:8000/account/login");
+    })
 });

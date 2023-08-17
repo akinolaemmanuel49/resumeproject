@@ -1,12 +1,16 @@
+from json import JSONEncoder
+import json
 from typing import Any
 
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import AnonymousUser
+from pydantic import EmailStr
 
 from account.models import Profile, User
 
@@ -19,6 +23,15 @@ class AccountDummyView(View):
         return render(request, self.template_name)
 
 
+class AccountDeleteAction(View, LoginRequiredMixin):
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        try:
+            user: User = User.objects.get(id=request.user.id)
+            user.delete()
+        except User.DoesNotExist:
+            return redirect("login-view")
+
+
 class AccountSettingsView(View, LoginRequiredMixin):
     template_name = "account/settings.html"
 
@@ -28,41 +41,50 @@ class AccountSettingsView(View, LoginRequiredMixin):
         except User.DoesNotExist:
             return redirect("login-view")
 
-        return render(request, self.template_name)
+        context = {"title": "Settings"}
+        return render(request, self.template_name, context)
 
-
-class AccountPasswordChangeView(View, LoginRequiredMixin):
-    template_name = "account/password-change.html"
-
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        try:
-            User.objects.get(id=request.user.id)
-        except User.DoesNotExist:
-            return redirect("login-view")
-
-        return render(request, self.template_name)
-
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> JsonResponse:
         old_password = request.POST.get("old_password")
         new_password = request.POST.get("new_password")
         new_password_confirm = request.POST.get("new_password_confirm")
 
         if new_password == new_password_confirm:
-            try:
-                user: User = User.objects.get(id=request.user.id)
-                if user.check_password(old_password):
-                    user.set_password(new_password)
-                else:
-                    error_message = "Incorrect password."
-                    return render(
-                        request, self.template_name, {"error_message": error_message}
-                    )
-            except User.DoesNotExist:
-                return redirect("login-view")
+            user = request.user
+            if isinstance(user, AnonymousUser):
+                error_message = "User not found."
+                response = {"Error": error_message}
+                return JsonResponse(response)
+
+            if user.check_password(old_password):
+                user.set_password(new_password)
+                user.save()
+                response = {"Message": "Password successfully changed."}
+                return JsonResponse(response)
+            else:
+                error_message = "Incorrect password."
+                response = {"Error": error_message}
+                return JsonResponse(response)
+
+        try:
+            new_email: EmailStr = request.POST.get("new_email")
+            print(new_email)
+        except Exception as e:
+            print(e)
+            error_message = "Invalid email address."
+            response = {"Error": error_message}
+            return JsonResponse(response)
+        if User.objects.filter(email=new_email).first():
+            error_message = "An account is already associated with this email address."
+            response = {"Error": error_message}
+            return JsonResponse(response)
         else:
-            error_message = "Passwords mismatch."
-            return render(request, self.template_name, {"error_message": error_message})
-        return redirect("profile-view")
+            user = request.user
+            user.email = new_email
+            user.save()
+            message = "User email was successfully changed."
+            response = {"Message": message}
+            return JsonResponse(response)
 
 
 class AccountProfileView(View, LoginRequiredMixin):
@@ -74,7 +96,7 @@ class AccountProfileView(View, LoginRequiredMixin):
         except Profile.DoesNotExist:
             return redirect("update-profile-view")
 
-        context = {"user_profile": user_profile, "page": "profile"}
+        context = {"user_profile": user_profile, "page": "profile", "title": "Profile"}
         return render(request, self.template_name, context)
 
 
@@ -87,7 +109,11 @@ class AccountEditProfileView(View, LoginRequiredMixin):
         except Profile.DoesNotExist:
             user_profile = None
 
-        context = {"user_profile": user_profile, "page": "profile"}
+        context = {
+            "user_profile": user_profile,
+            "page": "profile",
+            "title": "Edit Profile",
+        }
         return render(request, self.template_name, context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
@@ -139,15 +165,16 @@ class AccountCreateView(View):
                     error_message = (
                         "An account is already associated with this email address."
                     )
-                    return render(
-                        request, self.template_name, {"error_message": error_message}
-                    )
+                    context = {"error_message": error_message, "title": "Register"}
+                    return render(request, self.template_name, context)
             except User.DoesNotExist:
                 User.objects.create_user(email, password)
                 return redirect("login-view")
         else:
             error_message = "Passwords mismatch."
-            return render(request, self.template_name, {"error_message": error_message})
+            context = {"error_message": error_message, "title": "Register"}
+            return render(request, self.template_name, context)
+        context = {"title": "Register"}
         return render(request, self.template_name)
 
 
@@ -170,10 +197,11 @@ class AccountLoginView(LoginView):
                 if profile:
                     return redirect("profile-view")
             except Profile.DoesNotExist:
-                return redirect("update-profile-view")
+                return redirect("edit-profile-view")
         else:
             error_message = "Invalid login credentials."
-            return render(request, self.template_name, {"error_message": error_message})
+            context = {"error_message": error_message, "title": "Login"}
+            return render(request, self.template_name, context)
 
 
 class AccountLogoutView(LogoutView):

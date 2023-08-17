@@ -11,27 +11,29 @@
         <h1 class="h3 mb-3 fw-normal">Account Settings</h1>
         <div class="profile-card">
             <div class="profile-details">
-                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p id="email"><strong>Email:</strong> {{ user.email }}</p>
                 <div class="action-buttons">
                     <button id="changeEmailButton" class="btn btn-link">Change Email</button>
                     <button id="changePasswordButton" class="btn btn-link">Change Password</button>
-                    <button id="deleteAccountButton" class="btn btn-link">Delete Account</button>
+                    <button id="deleteAccountModalButton" class="btn btn-link">Delete Account</button>
                 </div>
                 <div id="changeEmailForm" style="display: none;">
-                    <form method="post" class="form-update-email">
+                    <form method="post" id="emailForm" class="form-update-email" action="{% url 'settings-view' %}">
                         {% csrf_token %}
                         <div class="form-floating">
                             <input type="email" class="form-control" id="floatingNewEmail" placeholder="New Email"
                                 name="new_email" aria-required="true">
                             <label for="floatingNewEmail">New Email</label>
                         </div>
-                        <button class="btn btn-primary w-100 py-2 update-email-button" type="submit">Change
+                        <button id="updateEmailButton" class="btn btn-primary w-100 py-2 update-email-button"
+                            type="click">Change
                             Email</button>
                     </form>
                 </div>
 
                 <div id="changePasswordForm" style="display: none;">
-                    <form method="post" class="form-update-password">
+                    <form method="post" id="passwordForm" class="form-update-password"
+                        action="{% url 'settings-view' %}">
                         {% csrf_token %}
                         <div class="form-floating">
                             <input type="password" class="form-control" id="floatingOldPassword"
@@ -48,7 +50,8 @@
                                 placeholder="Confirm New Password" name="new_password_confirm" aria-required="true">
                             <label for="floatingNewPasswordConfirm">Confirm New Password</label>
                         </div>
-                        <button class="btn btn-primary w-100 py-2 update-password-button" type="submit">Change
+                        <button id="updatePasswordButton" class="btn btn-primary w-100 py-2 update-password-button"
+                            type="click">Change
                             Password</button>
                     </form>
                 </div>
@@ -67,7 +70,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a href="{% url 'delete-account-view' %}" class="btn btn-danger">Delete Account</a>
+                                <a href="{% url 'delete-account-action' %}" id="deleteAccountButton" class="btn btn-danger">Delete Account</a>
                             </div>
                         </div>
                     </div>

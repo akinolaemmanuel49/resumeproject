@@ -1,18 +1,19 @@
 from django.urls import path
 
 from account.views import (
-    AccountEditProfileView,
     AccountCreateView,
+    AccountDeleteAction,
+    AccountDummyView,
+    AccountEditProfileView,
     AccountLoginView,
     AccountLogoutView,
-    AccountDummyView,
     AccountProfileView,
     AccountSettingsView,
 )
 
 urlpatterns = [
     path("dummy/", AccountDummyView.as_view(), name="dummy-view"),
-    path("dummy/", AccountDummyView.as_view(), name="delete-account-view"),
+    path("delete/", AccountDeleteAction.as_view(), name="delete-account-action"),
     path("settings/", AccountSettingsView.as_view(), name="settings-view"),
     path("profile/", AccountProfileView.as_view(), name="profile-view"),
     path("profile/edit", AccountEditProfileView.as_view(), name="edit-profile-view"),
