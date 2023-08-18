@@ -18,7 +18,8 @@
                     <button id="deleteAccountModalButton" class="btn btn-link">Delete Account</button>
                 </div>
                 <div id="changeEmailForm" style="display: none;">
-                    <form method="post" id="emailForm" class="form-update-email" action="{% url 'settings-view' %}">
+                    <form method="post" id="emailForm" class="form-update-email"
+                        action="{% url 'change-email-action' %}">
                         {% csrf_token %}
                         <div class="form-floating">
                             <input type="email" class="form-control" id="floatingNewEmail" placeholder="New Email"
@@ -33,7 +34,7 @@
 
                 <div id="changePasswordForm" style="display: none;">
                     <form method="post" id="passwordForm" class="form-update-password"
-                        action="{% url 'settings-view' %}">
+                        action="{% url 'change-password-action' %}">
                         {% csrf_token %}
                         <div class="form-floating">
                             <input type="password" class="form-control" id="floatingOldPassword"
@@ -70,7 +71,8 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a href="{% url 'delete-account-action' %}" id="deleteAccountButton" class="btn btn-danger">Delete Account</a>
+                                <a href="{% url 'delete-account-action' %}" id="deleteAccountButton"
+                                    class="btn btn-danger">Delete Account</a>
                             </div>
                         </div>
                     </div>

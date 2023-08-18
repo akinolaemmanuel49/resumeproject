@@ -16,6 +16,52 @@ from account.models import Profile, User
 
 
 # Create your views here.
+class AccountChangePasswordAction(View, LoginRequiredMixin):
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> JsonResponse:
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+        new_password_confirm = request.POST.get("new_password_confirm")
+
+        if new_password == new_password_confirm:
+            user = request.user
+            if isinstance(user, AnonymousUser):
+                error_message = "User not found."
+                response = {"Error": error_message}
+                return JsonResponse(response)
+            if user.check_password(old_password):
+                user.set_password(new_password)
+                user.save()
+                response = {"Message": "Password successfully changed."}
+                return JsonResponse(response)
+            else:
+                error_message = "Incorrect password."
+                response = {"Error": error_message}
+                return JsonResponse(response)
+
+
+class AccountChangeEmailAction(View, LoginRequiredMixin):
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> JsonResponse:
+        try:
+            new_email: EmailStr = request.POST.get("new_email")
+            print(new_email)
+        except Exception as e:
+            print(e)
+            error_message = "Invalid email address."
+            response = {"Error": error_message}
+            return JsonResponse(response)
+        if User.objects.filter(email=new_email).first():
+            error_message = "An account is already associated with this email address."
+            response = {"Error": error_message}
+            return JsonResponse(response)
+        else:
+            user = request.user
+            user.email = new_email
+            user.save()
+            message = "User email was successfully changed."
+            response = {"Message": message}
+            return JsonResponse(response)
+
+
 class AccountDummyView(View):
     template_name = "account/dummy.html"
 
@@ -43,48 +89,6 @@ class AccountSettingsView(View, LoginRequiredMixin):
 
         context = {"title": "Settings"}
         return render(request, self.template_name, context)
-
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> JsonResponse:
-        old_password = request.POST.get("old_password")
-        new_password = request.POST.get("new_password")
-        new_password_confirm = request.POST.get("new_password_confirm")
-
-        if new_password == new_password_confirm:
-            user = request.user
-            if isinstance(user, AnonymousUser):
-                error_message = "User not found."
-                response = {"Error": error_message}
-                return JsonResponse(response)
-
-            if user.check_password(old_password):
-                user.set_password(new_password)
-                user.save()
-                response = {"Message": "Password successfully changed."}
-                return JsonResponse(response)
-            else:
-                error_message = "Incorrect password."
-                response = {"Error": error_message}
-                return JsonResponse(response)
-
-        try:
-            new_email: EmailStr = request.POST.get("new_email")
-            print(new_email)
-        except Exception as e:
-            print(e)
-            error_message = "Invalid email address."
-            response = {"Error": error_message}
-            return JsonResponse(response)
-        if User.objects.filter(email=new_email).first():
-            error_message = "An account is already associated with this email address."
-            response = {"Error": error_message}
-            return JsonResponse(response)
-        else:
-            user = request.user
-            user.email = new_email
-            user.save()
-            message = "User email was successfully changed."
-            response = {"Message": message}
-            return JsonResponse(response)
 
 
 class AccountProfileView(View, LoginRequiredMixin):

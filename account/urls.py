@@ -1,6 +1,8 @@
 from django.urls import path
 
 from account.views import (
+    AccountChangeEmailAction,
+    AccountChangePasswordAction,
     AccountCreateView,
     AccountDeleteAction,
     AccountDummyView,
@@ -13,6 +15,16 @@ from account.views import (
 
 urlpatterns = [
     path("dummy/", AccountDummyView.as_view(), name="dummy-view"),
+    path(
+        "settings/change-password",
+        AccountChangePasswordAction.as_view(),
+        name="change-password-action",
+    ),
+    path(
+        "settings/change-email",
+        AccountChangeEmailAction.as_view(),
+        name="change-email-action",
+    ),
     path("delete/", AccountDeleteAction.as_view(), name="delete-account-action"),
     path("settings/", AccountSettingsView.as_view(), name="settings-view"),
     path("profile/", AccountProfileView.as_view(), name="profile-view"),
