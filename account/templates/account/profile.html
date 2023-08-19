@@ -17,7 +17,7 @@
                 <p><strong>Name:</strong> {{ user_profile.first_name }} {{ user_profile.last_name }}</p>
                 <p><strong>Email:</strong> {{ user_profile.email }}</p>
                 <p><strong>Phone:</strong> {{ user_profile.phone }}</p>
-                <a href="{% url 'edit-profile-view' %}" class="btn btn-primary">Edit Profile</a>
+                <a href="{% url 'account:edit-profile-view' %}" class="btn btn-primary">Edit Profile</a>
             </div>
         </div>
     </div>

@@ -1,5 +1,3 @@
-from json import JSONEncoder
-import json
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -66,6 +64,7 @@ class AccountDummyView(View):
     template_name = "account/dummy.html"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        print("DUMMY SIDE RESUME ID:",request.session["resume_id"])
         return render(request, self.template_name)
 
 
@@ -75,7 +74,7 @@ class AccountDeleteAction(View, LoginRequiredMixin):
             user: User = User.objects.get(id=request.user.id)
             user.delete()
         except User.DoesNotExist:
-            return redirect("login-view")
+            return redirect("account:login-view")
 
 
 class AccountSettingsView(View, LoginRequiredMixin):
@@ -85,7 +84,7 @@ class AccountSettingsView(View, LoginRequiredMixin):
         try:
             User.objects.get(id=request.user.id)
         except User.DoesNotExist:
-            return redirect("login-view")
+            return redirect("account:login-view")
 
         context = {"title": "Settings"}
         return render(request, self.template_name, context)
@@ -98,7 +97,7 @@ class AccountProfileView(View, LoginRequiredMixin):
         try:
             user_profile = Profile.objects.get(user=request.user)
         except Profile.DoesNotExist:
-            return redirect("update-profile-view")
+            return redirect("account:update-profile-view")
 
         context = {"user_profile": user_profile, "page": "profile", "title": "Profile"}
         return render(request, self.template_name, context)
@@ -148,7 +147,7 @@ class AccountEditProfileView(View, LoginRequiredMixin):
 
         user_profile.save()
 
-        return redirect("profile-view")
+        return redirect("account:profile-view")
 
 
 class AccountCreateView(View):
@@ -173,7 +172,7 @@ class AccountCreateView(View):
                     return render(request, self.template_name, context)
             except User.DoesNotExist:
                 User.objects.create_user(email, password)
-                return redirect("login-view")
+                return redirect("account:login-view")
         else:
             error_message = "Passwords mismatch."
             context = {"error_message": error_message, "title": "Register"}
@@ -199,9 +198,9 @@ class AccountLoginView(LoginView):
             try:
                 profile = Profile.objects.get(user=user)
                 if profile:
-                    return redirect("profile-view")
+                    return redirect("account:profile-view")
             except Profile.DoesNotExist:
-                return redirect("edit-profile-view")
+                return redirect("account:edit-profile-view")
         else:
             error_message = "Invalid login credentials."
             context = {"error_message": error_message, "title": "Login"}
@@ -209,4 +208,4 @@ class AccountLoginView(LoginView):
 
 
 class AccountLogoutView(LogoutView):
-    next_page = reverse_lazy("dummy-view")
+    next_page = reverse_lazy("account:dummy-view")

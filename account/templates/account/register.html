@@ -7,7 +7,7 @@
 
 {% block formContent %}
 {% csrf_token %}
-<img class="mb-4" src="{% static 'brand/bootstrap-logo.svg' %}" alt="" width="72" height="57">
+<!-- <img class="mb-4" src="{% static 'brand/bootstrap-logo.svg' %}" alt="" width="72" height="57"> -->
 <h1 class="h3 mb-3 fw-normal">Register</h1>
 
 <div class="form-floating">
@@ -26,7 +26,7 @@
     <label for="floatingConfirmPassword">Confirm Password</label>
 </div>
 
-<p>Already have an account? <a href="{% url 'login-view' %}">Log in</a></p>
+<p>Already have an account? <a href="{% url 'account:login-view' %}">Log in</a></p>
 <p>{{ error_message }}</p>
 
 <button class="btn btn-primary w-100 py-2" type="submit">Sign up</button>

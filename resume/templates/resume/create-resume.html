@@ -2,16 +2,26 @@
 {% load static %}
 
 {% block customStyle %}
-<link href="{% static 'css/account/update-profile.css' %}" rel="stylesheet">
+<link href="{% static 'css/resume/create-resume.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block form %}
-<form method="post" class="form-update-profile" enctype="multipart/form-data">
+<form method="post" class="form-create-resume" enctype="multipart/form-data">
     {% block formContent %}
     {% csrf_token %}
     <!-- <img class="mb-4" src="{% static 'brand/bootstrap-logo.svg' %}" alt="" width="72" height="57"> -->
-    <h1 class="h3 mb-3 fw-normal">Update Profile Details</h1>
+    <h1 class="h3 mb-3 fw-normal">Create New Resume</h1>
 
+    <div class="form-floating">
+        <input type="text" class="form-control" id="floatingTitle" placeholder="Resume Title" name="title"
+            aria-required="true">
+        <label for="floatingTitle">Title</label>
+    </div>
+    <div class="form-floating">
+        <textarea type="" class="form-control" id="floatingDescription" placeholder="Description" name="description"
+            aria-required="true"></textarea>
+        <label for="floatingDescription">Description</label>
+    </div>
     <div class="form-floating">
         <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="first_name"
             aria-required="true" value="{{ user_profile.first_name }}">
@@ -38,7 +48,7 @@
         <label for="floatingImage">Profile Image</label>
     </div>
 
-    <button class="btn btn-primary w-100 py-2 update-profile-button" type="submit">Update Profile</button>
+    <button class="btn btn-primary w-100 py-2 update-profile-button" type="submit">Create Resume</button>
     <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
     {% endblock %}
 </form>

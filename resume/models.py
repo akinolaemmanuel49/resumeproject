@@ -7,12 +7,15 @@ from account.models import User
 # Create your models here.
 class Resume(models.Model):
     title = models.CharField(_("Title"), max_length=255)
-    description = models.TextField(_("Description"))
+    description = models.TextField(_("Description"), blank=True, null=True)
     first_name = models.CharField(_("First Name"), max_length=255)
     last_name = models.CharField(_("Last Name"), max_length=255)
     email = models.EmailField(_("Email Address"))
     phone = models.CharField(_("Phone Number"), max_length=15)
-
+    image = models.ImageField(
+        _("Resume Picture"), upload_to="images/resumes", blank=True, null=True
+    )
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

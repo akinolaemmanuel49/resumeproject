@@ -13,6 +13,8 @@ from account.views import (
     AccountSettingsView,
 )
 
+app_name = "account"
+
 urlpatterns = [
     path("dummy/", AccountDummyView.as_view(), name="dummy-view"),
     path(
