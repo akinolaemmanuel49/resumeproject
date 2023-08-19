@@ -19,10 +19,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 
+from account.views import AccountHomeView
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("account/", include("account.urls")),
     path("resume/", include("resume.urls")),
+    path("", AccountHomeView.as_view(), name="home-view")
 ]
 
 if settings.DEBUG:

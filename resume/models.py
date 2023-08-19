@@ -15,13 +15,17 @@ class Resume(models.Model):
     image = models.ImageField(
         _("Resume Picture"), upload_to="images/resumes", blank=True, null=True
     )
-    
+    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Social(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     url = models.URLField(_("URL"))
+    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
 
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
 
@@ -40,6 +44,8 @@ class WorkHistory(models.Model):
     start_date = models.DateField(_("Start Date"))
     end_date = models.DateField(_("End Date"), blank=True, null=True)
     position = models.CharField(_("Position"), max_length=255)
+    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
 
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
 
@@ -55,5 +61,7 @@ class Skill(models.Model):
     )
     name = models.CharField(_("Skill Name"), max_length=255)
     level = models.CharField(_("Level"), choices=SKILL_CHOICES, max_length=15)
+    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
 
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)

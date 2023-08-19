@@ -1,0 +1,21 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/account/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="container">
+        <div class="resumes-list">
+            {% if user_resumes %}
+            {% for resume in user_resumes %}
+            <p>{{ resume.title }}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+</main>
+{% endblock %}

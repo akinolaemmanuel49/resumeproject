@@ -1,0 +1,32 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/resume/add-resume-socials.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form %}
+<form method="post" class="form-add-resume-socials" enctype="multipart/form-data">
+    {% block formContent %}
+    {% csrf_token %}
+    <!-- <img class="mb-4" src="{% static 'brand/bootstrap-logo.svg' %}" alt="" width="72" height="57"> -->
+    <h1 class="h3 mb-3 fw-normal">Add Resume Socials</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control" id="floatingName" placeholder="Social Name" name="name"
+            aria-required="true">
+        <label for="floatingName">Name</label>
+    </div>
+    <div class="form-floating">
+        <input type="url" class="form-control" id="floatingURL" placeholder="URL" name="url" aria-required="true">
+        <label for="floatingURL">URL</label>
+    </div>
+
+    <button class="btn btn-primary w-100 py-2 add-new-social-button" type="button">Add</button>
+    <button class="btn btn-primary w-100 py-2 submit-social-button" type="submit">Submit</button>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+    {% endblock %}
+</form>
+
+<script src="{% static 'js/account/add-resume-social.js' %}"></script>
+{% endblock %}

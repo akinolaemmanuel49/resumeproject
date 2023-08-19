@@ -60,7 +60,7 @@ body {
     border-radius: 0;
 }
 
-.update-profile-button {
+.create-resume-submit-button {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));

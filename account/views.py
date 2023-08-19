@@ -11,6 +11,7 @@ from django.contrib.auth.models import AnonymousUser
 from pydantic import EmailStr
 
 from account.models import Profile, User
+from resume.models import Resume
 
 
 # Create your views here.
@@ -60,11 +61,27 @@ class AccountChangeEmailAction(View, LoginRequiredMixin):
             return JsonResponse(response)
 
 
+class AccountHomeView(View):
+    template_name = "account/dummy.html"
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        try:
+            print("DUMMY SIDE RESUME ID:", request.session["resume_id"])
+        except Exception:
+            print("DUMMY SIDE RESUME ID NOT SET")
+        print("REMOTE IP ADDR: ", request.META["REMOTE_ADDR"])
+        return render(request, self.template_name)
+
+
 class AccountDummyView(View):
     template_name = "account/dummy.html"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        print("DUMMY SIDE RESUME ID:",request.session["resume_id"])
+        try:
+            print("DUMMY SIDE RESUME ID:", request.session["resume_id"])
+        except Exception:
+            print("DUMMY SIDE RESUME ID NOT SET")
+        print("REMOTE IP ADDR: ", request.META["REMOTE_ADDR"])
         return render(request, self.template_name)
 
 
@@ -86,12 +103,28 @@ class AccountSettingsView(View, LoginRequiredMixin):
         except User.DoesNotExist:
             return redirect("account:login-view")
 
-        context = {"title": "Settings"}
+        try:
+            dashboard_user_resumes = (
+                Resume.objects.filter(user=request.user)
+                .order_by("-created_at")
+                .all()[:3]
+            )
+        except Resume.DoesNotExist:
+            context = {"title": "Settings", "page": "settings"}
+            return render(request, self.template_name, context)
+
+        context = {
+            "title": "Settings",
+            "page": "settings",
+            "dashboard_user_resumes": dashboard_user_resumes,
+        }
         return render(request, self.template_name, context)
 
 
 class AccountProfileView(View, LoginRequiredMixin):
     template_name = "account/profile.html"
+    page = "profile"
+    title = "Profile"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         try:
@@ -99,12 +132,29 @@ class AccountProfileView(View, LoginRequiredMixin):
         except Profile.DoesNotExist:
             return redirect("account:update-profile-view")
 
-        context = {"user_profile": user_profile, "page": "profile", "title": "Profile"}
+        try:
+            dashboard_user_resumes = (
+                Resume.objects.filter(user=request.user)
+                .order_by("-created_at")
+                .all()[:3]
+            )
+        except Resume.DoesNotExist:
+            context = {"title": self.title, "page": self.page}
+            return render(request, self.template_name, context)
+
+        context = {
+            "user_profile": user_profile,
+            "page": self.page,
+            "title": self.title,
+            "dashboard_user_resumes": dashboard_user_resumes,
+        }
         return render(request, self.template_name, context)
 
 
 class AccountEditProfileView(View, LoginRequiredMixin):
     template_name = "account/update-profile.html"
+    page = "profile"
+    title = "Edit Profile"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         try:
@@ -112,10 +162,21 @@ class AccountEditProfileView(View, LoginRequiredMixin):
         except Profile.DoesNotExist:
             user_profile = None
 
+        try:
+            dashboard_user_resumes = (
+                Resume.objects.filter(user=request.user)
+                .order_by("-created_at")
+                .all()[:3]
+            )
+        except Resume.DoesNotExist:
+            context = {"title": self.title, "page": self.page}
+            return render(request, self.template_name, context)
+
         context = {
             "user_profile": user_profile,
-            "page": "profile",
-            "title": "Edit Profile",
+            "page": self.page,
+            "title": self.title,
+            "dashboard_user_resumes": dashboard_user_resumes,
         }
         return render(request, self.template_name, context)
 

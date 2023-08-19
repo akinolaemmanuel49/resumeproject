@@ -34,6 +34,8 @@ class Profile(models.Model):
     image = models.ImageField(
         _("Image"), upload_to="images/profiles", blank=True, null=True
     )
+    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
 
     def __str__(self):
         return self.email
