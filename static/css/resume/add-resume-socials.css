@@ -34,13 +34,18 @@ body {
     border-radius: 0;
 }
 
+.delete-social-item {
+    color: red;
+    text-decoration: none;
+}
+
 .add-new-social-button {
     margin-bottom: -1px;
     border-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));
 }
 
-.submit-social-button {
+.submit-socials-button {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));

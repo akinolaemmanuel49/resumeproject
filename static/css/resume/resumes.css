@@ -1,0 +1,21 @@
+.resumes-list {
+    margin-top: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5%;
+    width: auto;
+    height: 469px;
+}
+
+.resume-item {
+    list-style: square;
+}
+
+.resume-title {
+    font-size: larger;
+    font-family: 'Courier New', Courier, monospace;
+    text-decoration: none;
+}

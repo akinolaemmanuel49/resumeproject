@@ -1,0 +1,45 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/user/update-profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form %}
+<form method="post" class="form-update-profile" enctype="multipart/form-data">
+    {% block formContent %}
+    {% csrf_token %}
+    <!-- <img class="mb-4" src="{% static 'brand/bootstrap-logo.svg' %}" alt="" width="72" height="57"> -->
+    <h1 class="h3 mb-3 fw-normal">Update Profile Details</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="first_name"
+            aria-required="true" value="{{ user_profile.first_name }}">
+        <label for="floatingFirstName">First Name</label>
+    </div>
+    <div class="form-floating">
+        <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" name="last_name"
+            aria-required="true" value="{{ user_profile.last_name }}">
+        <label for="floatingLastName">Last Name</label>
+    </div>
+    <div class="form-floating">
+        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" name="email"
+            aria-required="true" value="{{ user_profile.email }}">
+        <label for="floatingEmail">Email address</label>
+    </div>
+    <div class="form-floating">
+        <input type="tel" class="form-control" id="floatingPhone" placeholder="Phone Number" name="phone"
+            aria-required="true" value="{{ user_profile.phone }}">
+        <label for="floatingPhone">Phone Number</label>
+    </div>
+    <div class="form-floating">
+        <input type="file" class="form-control" id="floatingImage" accept="image/*" name="image" aria-required="false"
+            value="{{ user_profile.image }}">
+        <label for="floatingImage">Profile Image</label>
+    </div>
+
+    <button class="btn btn-primary w-100 py-2 update-profile-button" type="submit">Update Profile</button>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+    {% endblock %}
+</form>
+{% endblock %}

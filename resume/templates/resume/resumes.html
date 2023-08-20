@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block customStyle %}
-<link href="{% static 'css/account/profile.css' %}" rel="stylesheet">
+<link href="{% static 'css/resume/resumes.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -10,9 +10,15 @@
     <div class="container">
         <div class="resumes-list">
             {% if user_resumes %}
-            {% for resume in user_resumes %}
-            <p>{{ resume.title }}</p>
-            {% endfor %}
+            <ul class="resume-item">
+                {% for resume in user_resumes %}
+                <li>
+                    <a class="resume-title" href="">
+                        <p>{{ resume.title }}</p>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
             {% endif %}
         </div>
     </div>

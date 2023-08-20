@@ -39,8 +39,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                emailField.textContent = formData.get("new_email");
-                emailForm.reset();
+                if (!data.Error) {
+                    emailField.textContent = formData.get("new_email");
+                    emailForm.reset();
+                }
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 console.log(data);
                 passwordForm.reset();
-                window.location.replace("http://127.0.0.1:8000/account/login");
+                window.location.replace("http://127.0.0.1:8000/auth/login");
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -104,6 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
     deleteAccountButton.addEventListener("click", function (event) {
         event.preventDefault();
 
-        window.location.replace("http://127.0.0.1:8000/account/login");
+        window.location.replace("http://127.0.0.1:8000/auth/login");
     })
 });

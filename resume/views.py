@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render, HttpResponse
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from account.models import Profile
+from user.models import Profile
 from resume.models import Resume
 
 

@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account.apps.AccountConfig',
+    'authentication.apps.AuthenticationConfig',
+    'user.apps.UserConfig',
     'resume.apps.ResumeConfig',
 ]
 
@@ -57,7 +58,9 @@ ROOT_URLCONF = 'resumeproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'resumeproject.context_processors.dashboard_resumes',
             ],
         },
     },
@@ -83,7 +87,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'user.User'
 
 
 # Password validation

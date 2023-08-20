@@ -1,0 +1,89 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/user/settings.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="container">
+        <h1 class="h3 mb-3 fw-normal">Account Settings</h1>
+        <div class="profile-card">
+            <div class="profile-details">
+                <p><strong>Email:</strong>
+                <p id="email">{{ user.email }}</p>
+                </p>
+                <div class="action-buttons">
+                    <button id="changeEmailButton" class="btn btn-link">Change Email</button>
+                    <button id="changePasswordButton" class="btn btn-link">Change Password</button>
+                    <button id="deleteAccountModalButton" class="btn btn-link">Delete Account</button>
+                </div>
+                <div id="changeEmailForm" style="display: none;">
+                    <form method="post" id="emailForm" class="form-update-email"
+                        action="{% url 'user:change-email-action' %}">
+                        {% csrf_token %}
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="floatingNewEmail" placeholder="New Email"
+                                name="new_email" aria-required="true">
+                            <label for="floatingNewEmail">New Email</label>
+                        </div>
+                        <button id="updateEmailButton" class="btn btn-primary w-100 py-2 update-email-button"
+                            type="click">Change
+                            Email</button>
+                    </form>
+                </div>
+
+                <div id="changePasswordForm" style="display: none;">
+                    <form method="post" id="passwordForm" class="form-update-password"
+                        action="{% url 'user:change-password-action' %}">
+                        {% csrf_token %}
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="floatingOldPassword"
+                                placeholder="Old Password" name="old_password" aria-required="true">
+                            <label for="floatingOldPassword">Old Password</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="floatingNewPassword"
+                                placeholder="New Password" name="new_password" aria-required="true">
+                            <label for="floatingNewPassword">New Password</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="floatingNewPasswordConfirm"
+                                placeholder="Confirm New Password" name="new_password_confirm" aria-required="true">
+                            <label for="floatingNewPasswordConfirm">Confirm New Password</label>
+                        </div>
+                        <button id="updatePasswordButton" class="btn btn-primary w-100 py-2 update-password-button"
+                            type="click">Change
+                            Password</button>
+                    </form>
+                </div>
+
+                <div id="deleteAccountModal" class="modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Account Deletion</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete your account? This action cannot be undone.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <a href="{% url 'user:delete-user-action' %}" id="deleteAccountButton"
+                                    class="btn btn-danger">Delete Account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+</main>
+
+<script src="{% static 'js/user/settings.js' %}"></script>
+{% endblock %}
