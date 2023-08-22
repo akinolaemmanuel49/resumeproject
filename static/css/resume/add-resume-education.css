@@ -4,7 +4,7 @@
     align-items: center;
 }
 
-.form-add-resume-socials {
+.form-add-resume-education {
     width: 300px;
 }
 
@@ -13,48 +13,58 @@ body {
     height: 100%;
 }
 
-.form-add-resume-socials {
+.form-add-resume-education {
     max-width: 330px;
     padding: 0.25rem;
     min-height: 576px;
     height: inherit;
 }
 
-.form-add-resume-socials .form-floating:focus-within {
+.form-add-resume-education .form-floating:focus-within {
     z-index: 2;
 }
 
-.form-add-resume-socials #floatingName {
+.form-add-resume-education #floatingInstitutionName {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.form-add-resume-socials #floatingURL {
+.form-add-resume-education #floatingStartDate {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-add-resume-socials #deleteSocialItemButton {
+.form-add-resume-education #floatingEndDate {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-add-resume-education #floatingDegree {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-add-resume-education #deleteEducationItemButton {
     margin-bottom: 25px;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     width: 100%;
 }
 
-.delete-social-item {
+.delete-education-item {
     color: red;
     text-decoration: none;
 }
 
-.add-new-social-button {
+.add-new-education-button {
     margin-bottom: -1px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));
 }
 
-.submit-socials-button {
+.submit-education-button {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));

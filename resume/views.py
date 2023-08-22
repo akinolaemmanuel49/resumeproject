@@ -6,13 +6,13 @@ from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from user.models import Profile
-from resume.models import Resume
+from resume.models import Education, Resume, Social, WorkHistory
 
 
 # Create your views here.
 class CreateResumeView(View, LoginRequiredMixin):
     template_name = "resume/create-resume.html"
-    success_url = "account:dummy-view"
+    success_url = "user:dummy-view"
     page = "create-resume"
     title = "Create Resume"
 
@@ -20,13 +20,12 @@ class CreateResumeView(View, LoginRequiredMixin):
         try:
             user_profile = Profile.objects.get(user=request.user)
         except Profile.DoesNotExist:
-            return redirect("account:edit-profile-view")
+            return redirect("user:edit-profile-view")
 
         try:
             user_resumes = (
                 Resume.objects.filter(user=request.user).all().order_by("-created_at")
             )
-            dashboard_user_resumes = user_resumes[:3]
         except Resume.DoesNotExist:
             context = {
                 "user_profile": user_profile,
@@ -37,7 +36,6 @@ class CreateResumeView(View, LoginRequiredMixin):
 
         context = {
             "user_profile": user_profile,
-            "dashboard_user_resumes": dashboard_user_resumes,
             "user_resumes": user_resumes,
             "page": self.page,
             "title": self.title,
@@ -98,7 +96,6 @@ class ResumesView(View, LoginRequiredMixin):
             user_resumes = (
                 Resume.objects.filter(user=request.user).all().order_by("-created_at")
             )
-            dashboard_user_resumes = user_resumes[:3]
         except Resume.DoesNotExist:
             context = {
                 "page": self.page,
@@ -107,7 +104,6 @@ class ResumesView(View, LoginRequiredMixin):
             return render(request, self.template_name, context)
 
         context = {
-            "dashboard_user_resumes": dashboard_user_resumes,
             "user_resumes": user_resumes,
             "page": self.page,
             "title": self.title,
@@ -119,16 +115,146 @@ class ResumesView(View, LoginRequiredMixin):
         pass
 
 
+class ResumeView(View, LoginRequiredMixin):
+    template_name = "resume/resume-view.html"
+    page = "resumes"
+    title = "Resume"
+
+    def get(
+        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        try:
+            resume = Resume.objects.get(id=id)
+        except Resume.DoesNotExist:
+            return HttpResponse("Error: 404.\nPage not found.")
+        context = {"page": self.page, "title": self.title}
+        return HttpResponse(
+            f"Title: {resume.title}\n\
+            Description: {resume.description}\n\
+            Name: {resume.first_name} {resume.last_name}",
+            context,
+        )
+
+
 class AddResumeSocialsView(View, LoginRequiredMixin):
     template_name = "resume/add-resume-socials.html"
+    page = "create-resume"
+    title = "Add Resume Socials"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         context = {
-            "page": "create-resume",
-            "title": "Add Resume Socials",
+            "page": self.page,
+            "title": self.title,
         }
 
         return render(request, self.template_name, context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        pass
+        names = request.POST.getlist("name")
+        urls = request.POST.getlist("url")
+
+        context = {
+            "page": self.page,
+            "title": self.title,
+        }
+
+        try:
+            resume = Resume.objects.get(id=request.session["resume_id"])
+        except Resume.DoesNotExist:
+            return render(request, self.template_name, context)
+        try:
+            for name, url in zip(names, urls):
+                Social.objects.create(name=name, url=url, resume=resume)
+        except Exception:
+            return render(request, self.template_name, context)
+        return redirect("home-view")
+
+
+class AddEducationView(View, LoginRequiredMixin):
+    template_name = "resume/add-resume-education.html"
+    page = "create-resume"
+    title = "Add Resume Educational Background"
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        context = {
+            "page": self.page,
+            "title": self.title,
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        institutions = request.POST.getlist("institution")
+        start_dates = request.POST.getlist("start_date")
+        end_dates = request.POST.getlist("end_date")
+        degrees = request.POST.getlist("degree")
+
+        context = {
+            "page": self.page,
+            "title": self.title,
+        }
+
+        try:
+            resume = Resume.objects.get(id=request.session["resume_id"])
+        except Resume.DoesNotExist:
+            return render(request, self.template_name, context)
+        try:
+            for institution, start_date, end_date, degree in zip(
+                institutions, start_dates, end_dates, degrees
+            ):
+                Education.objects.create(
+                    institution=institution,
+                    start_date=start_date,
+                    end_date=end_date,
+                    degree=degree,
+                    resume=resume,
+                )
+
+        except Exception:
+            return render(request, self.template_name, context)
+        return redirect("home-view")
+
+
+class AddWorkHistoryView(View, LoginRequiredMixin):
+    template_name = "resume/add-resume-work-history.html"
+    page = "create-resume"
+    title = "Add Resume Work History"
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        context = {
+            "page": self.page,
+            "title": self.title,
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        names = request.POST.getlist("position")
+        start_dates = request.POST.getlist("start_date")
+        end_dates = request.POST.getlist("end_date")
+        positions = request.POST.getlist("position")
+
+        context = {
+            "page": self.page,
+            "title": self.title,
+        }
+
+        try:
+            resume = Resume.objects.get(id=request.session["resume_id"])
+        except Resume.DoesNotExist:
+            return render(request, self.template_name, context)
+        try:
+            for name, start_date, end_date, position in zip(
+                names, start_dates, end_dates, positions
+            ):
+                WorkHistory.objects.create(
+                    name=name,
+                    start_date=start_date,
+                    end_date=end_date,
+                    position=position,
+                    resume=resume,
+                )
+
+        except Exception:
+            return render(request, self.template_name, context)
+        return redirect("home-view")

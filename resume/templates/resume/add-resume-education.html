@@ -1,0 +1,49 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/resume/add-resume-education.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form %}
+<form method="post" class="form-add-resume-education" enctype="multipart/form-data">
+    {% block formContent %}
+    {% csrf_token %}
+    <h1 class="h3 mb-3 fw-normal">Add Resume Educational Background</h1>
+
+    <div id="educationalBackground">
+        <div class="education-item">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingInstitutionName" placeholder="Institution Name"
+                    name="institution" aria-required="true">
+                <label for="floatingInstitutionName">Institution Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="date" class="form-control" id="floatingStartDate" placeholder="Start Date"
+                    name="start_date" aria-required="true">
+                <label for="floatingStartDate">Start Date</label>
+            </div>
+            <div class="form-floating">
+                <input type="date" class="form-control" id="floatingEndDate" placeholder="End Date" name="end_date">
+                <label for="floatingEndDate">End Date</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingDegree" placeholder="Degree" name="degree"
+                    aria-required="true">
+                <label for="floatingDegree">Degree</label>
+            </div>
+            <button class="btn btn-danger delete-education-button" id="deleteEducationItemButton" type="button">Delete
+                #<span class="education-item-number">1</span></button>
+        </div>
+    </div>
+
+    <button class="btn btn-primary w-100 py-2 add-new-education-button" id="addNewEducationItemButton"
+        type="button">Add</button>
+    <button class="btn btn-primary w-100 py-2 submit-education-button" id="submitEducationButton"
+        type="submit">Submit</button>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+    {% endblock %}
+</form>
+
+<script src="{% static 'js/resume/add-resume-education.js' %}"></script>
+{% endblock %}

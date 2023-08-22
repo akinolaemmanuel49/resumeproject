@@ -215,7 +215,7 @@
                             {% for resume in dashboard_user_resumes %}
                             <ul class="nav flex-column mb-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link d-flex align-items-center gap-2" href="#">
+                                    <a class="nav-link d-flex align-items-center gap-2" href="{% url 'resume:resume-view' id=resume.id %}">
                                         <i class="bi-file-earmark-text" style="font-size: 1.25rem;"></i>
                                         {{ resume.title }}
                                     </a>

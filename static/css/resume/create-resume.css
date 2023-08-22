@@ -16,7 +16,8 @@ body {
 .form-create-resume {
     max-width: 330px;
     padding: 0.25rem;
-    height: 576px;
+    min-height: 576px;
+    height: inherit;
 }
 
 .form-create-resume .form-floating:focus-within {

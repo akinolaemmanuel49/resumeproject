@@ -7,7 +7,8 @@
     margin-top: 20px;
     border-radius: 5%;
     width: auto;
-    height: 438px;
+    min-height: 438px;
+    height: inherit;
 }
 
 /* Buttons */
