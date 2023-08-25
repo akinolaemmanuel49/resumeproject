@@ -5,7 +5,6 @@ from user.views import (
     UserChangePasswordAction,
     UserCreateView,
     UserDeleteAction,
-    UserDummyView,
     UserEditProfileView,
     UserProfileView,
     UserSettingsView,
@@ -14,7 +13,6 @@ from user.views import (
 app_name = "user"
 
 urlpatterns = [
-    path("dummy/", UserDummyView.as_view(), name="dummy-view"),
     path(
         "settings/change-password",
         UserChangePasswordAction.as_view(),

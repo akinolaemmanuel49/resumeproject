@@ -37,4 +37,4 @@ class AuthLoginView(LoginView):
 
 
 class AuthLogoutView(LogoutView):
-    next_page = reverse_lazy("user:dummy-view")
+    next_page = reverse_lazy("home-view")

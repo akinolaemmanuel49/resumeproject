@@ -46,20 +46,6 @@ class UserChangeEmailAction(View, LoginRequiredMixin):
         user.save()
         return JsonResponse({"Message": "User email was successfully changed."})
 
-
-class UserDummyView(View):
-    template_name = "user/dummy.html"
-
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> JsonResponse:
-        resume_id = request.session.get("resume_id", "NOT SET")
-        remote_ip = request.META.get("REMOTE_ADDR", "UNKNOWN")
-        return render(
-            request,
-            self.template_name,
-            {"resume_id": resume_id, "remote_ip": remote_ip},
-        )
-
-
 class UserDeleteAction(View, LoginRequiredMixin):
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         user = User.objects.filter(id=request.user.id).first()
