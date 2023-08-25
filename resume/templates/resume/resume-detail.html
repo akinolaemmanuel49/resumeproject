@@ -1,0 +1,84 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/resume/resume.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="container">
+        <div class="resume-detail">
+            <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
+            <p class="contact-details">{{resume.phone}} | {{resume.email}}</p>
+
+            <h3>Profile</h3>
+            <hr>
+            <p class="item-container">{{ resume.description }}</p>
+            <!-- Display other resume details such as name, email, phone, etc. -->
+
+            <h3>Work History</h3>
+            <hr>
+            <ul class="item-container">
+                {% for work_history in resume.workhistory_set.all %}
+                <li>
+                    <div class="flex-container-custom">
+                        <div class="column-custom wrap-content-custom">
+                            <p class="bold">{{ work_history.name }}</p>
+                            <div class="row-custom">
+                                <p class="wrap-text-custom">
+                                    {{ work_history.position }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="column-custom fit-content-custom">
+                            <p>{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date != None %} {{
+                                work_history.end_date|date:"M Y" }} {% else %} Current {% endif %}</p>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h3>Education</h3>
+            <hr>
+            <ul class="item-container">
+                {% for education in resume.education_set.all %}
+                <li>
+                    <div class="flex-container-custom">
+                        <div class="column-custom wrap-content-custom">
+                            <p class="bold">{{ education.institution }}</p>
+                            <div class="row-custom">
+                                <p class="wrap-text-custom">
+                                    {{ education.degree }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="column-custom fit-content-custom">
+                            <p>{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</p>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h3>Skills</h3>
+            <hr>
+            <ul class="item-container">
+                {% for skill in resume.skill_set.all %}
+                <li>{{ skill.name }} - {{ skill.get_level_display }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Social</h3>
+            <hr>
+            <ul class="item-container">
+                {% for social in resume.social_set.all %}
+                <li>{{ social.name }}: {{ social.url }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+</main>
+{% endblock %}

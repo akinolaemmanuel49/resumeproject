@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.http import HttpRequest
-from django.shortcuts import redirect, render, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -117,7 +117,7 @@ class ResumesView(View, LoginRequiredMixin):
 
 
 class ResumeView(View, LoginRequiredMixin):
-    template_name = "resume/resume-view.html"
+    template_name = "resume/resume-detail.html"
     page = "resumes"
     title = "Resume"
 
@@ -126,15 +126,10 @@ class ResumeView(View, LoginRequiredMixin):
     ) -> HttpResponse:
         try:
             resume = Resume.objects.get(id=id)
+            context = {"page": self.page, "title": self.title, "resume": resume}
+            return render(request, self.template_name, context)
         except Resume.DoesNotExist:
-            return HttpResponse("Error: 404.\nPage not found.")
-        context = {"page": self.page, "title": self.title}
-        return HttpResponse(
-            f"Title: {resume.title}\n\
-            Description: {resume.description}\n\
-            Name: {resume.first_name} {resume.last_name}",
-            context,
-        )
+            return redirect("resume:create-resume-view")
 
 
 class AddResumeSocialsView(View, LoginRequiredMixin):
