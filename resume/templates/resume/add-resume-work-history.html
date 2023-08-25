@@ -1,0 +1,51 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/resume/add-resume-work-history.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form %}
+<form method="post" action="{% url 'resume:add-resume-work-history' %}" class="form-add-resume-work-history" enctype="multipart/form-data">
+    {% block formContent %}
+    {% csrf_token %}
+    <h1 class="h3 mb-3 fw-normal">Add Resume Work History</h1>
+
+    <div id="workHistory">
+        <div class="work-history-item">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingOrganizationName" placeholder="Organization Name"
+                    name="organization_name" aria-required="true">
+                <label for="floatingOrganizationName">Organization Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="date" class="form-control" id="floatingStartDate" placeholder="Start Date"
+                    name="start_date" aria-required="true">
+                <label for="floatingStartDate">Start Date</label>
+            </div>
+            <div class="form-floating">
+                <input type="date" class="form-control" id="floatingEndDate" placeholder="End Date" name="end_date">
+                <label for="floatingEndDate">End Date</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingPosition" placeholder="Position" name="position"
+                    aria-required="true">
+                <label for="floatingPosition">Position</label>
+            </div>
+            <button class="btn btn-danger delete-work-history-button" id="deleteWorkHistoryItemButton" type="button">Delete
+                #<span class="work-history-item-number">1</span></button>
+        </div>
+    </div>
+
+    <p class="error-message">{{ error_message }}</p>
+
+    <button class="btn btn-primary w-100 py-2 add-new-work-history-button" id="addNewWorkHistoryItemButton"
+        type="button">Add</button>
+    <button class="btn btn-primary w-100 py-2 submit-work-history-button" id="submitWorkHistoryButton"
+        type="submit">Submit</button>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+    {% endblock %}
+</form>
+
+<script src="{% static 'js/resume/add-resume-work-history.js' %}"></script>
+{% endblock %}

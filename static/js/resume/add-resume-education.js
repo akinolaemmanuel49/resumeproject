@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    document.getElementById("submitEducationButton").addEventListener("click", function () {
+    document.getElementById("submitEducationButton").addEventListener("submit", function () {
         updateEducationItemNumbers();
     });
 });

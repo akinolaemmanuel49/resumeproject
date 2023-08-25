@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    document.getElementById("submitSocialsButton").addEventListener("click", function () {
+    document.getElementById("submitSocialsButton").addEventListener("submit", function () {
         updateSocialItemNumbers();
     });
 

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block form %}
-<form method="post" class="form-create-resume" enctype="multipart/form-data">
+<form method="post" action="{% url 'resume:create-resume-view' %}" class="form-create-resume" enctype="multipart/form-data">
     {% block formContent %}
     {% csrf_token %}
     <!-- <img class="mb-4" src="{% static 'brand/bootstrap-logo.svg' %}" alt="" width="72" height="57"> -->

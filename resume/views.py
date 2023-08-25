@@ -6,13 +6,13 @@ from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from user.models import Profile
-from resume.models import Education, Resume, Social, WorkHistory
+from resume.models import Education, Resume, Skill, Social, WorkHistory
 
 
 # Create your views here.
 class CreateResumeView(View, LoginRequiredMixin):
     template_name = "resume/create-resume.html"
-    success_url = "user:dummy-view"
+    success_url = "resume:add-resume-socials"
     page = "create-resume"
     title = "Create Resume"
 
@@ -76,6 +76,7 @@ class CreateResumeView(View, LoginRequiredMixin):
                     "user_profile": user_profile,
                     "page": self.page,
                     "title": self.title,
+                    "error_message": "An error occurred. Check the form and try again.",
                 }
                 return render(request, self.template_name, context)
             except Profile.DoesNotExist:
@@ -140,6 +141,7 @@ class AddResumeSocialsView(View, LoginRequiredMixin):
     template_name = "resume/add-resume-socials.html"
     page = "create-resume"
     title = "Add Resume Socials"
+    success_url = "resume:add-resume-education"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         context = {
@@ -166,14 +168,18 @@ class AddResumeSocialsView(View, LoginRequiredMixin):
             for name, url in zip(names, urls):
                 Social.objects.create(name=name, url=url, resume=resume)
         except Exception:
+            context = {
+                "error_message": "An error occurred. Check the form and try again."
+            }
             return render(request, self.template_name, context)
-        return redirect("home-view")
+        return redirect(self.success_url)
 
 
 class AddEducationView(View, LoginRequiredMixin):
     template_name = "resume/add-resume-education.html"
     page = "create-resume"
     title = "Add Resume Educational Background"
+    success_url = "resume:add-resume-work-history"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         context = {
@@ -211,14 +217,18 @@ class AddEducationView(View, LoginRequiredMixin):
                 )
 
         except Exception:
+            context = {
+                "error_message": "An error occurred. Check the form and try again."
+            }
             return render(request, self.template_name, context)
-        return redirect("home-view")
+        return redirect(self.success_url)
 
 
 class AddWorkHistoryView(View, LoginRequiredMixin):
     template_name = "resume/add-resume-work-history.html"
     page = "create-resume"
     title = "Add Resume Work History"
+    success_url = "resume:add-resume-skills"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         context = {
@@ -229,10 +239,13 @@ class AddWorkHistoryView(View, LoginRequiredMixin):
         return render(request, self.template_name, context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        names = request.POST.getlist("position")
+        names = request.POST.getlist("organization_name")
         start_dates = request.POST.getlist("start_date")
         end_dates = request.POST.getlist("end_date")
         positions = request.POST.getlist("position")
+
+        print(names)
+        print(positions)
 
         context = {
             "page": self.page,
@@ -247,6 +260,8 @@ class AddWorkHistoryView(View, LoginRequiredMixin):
             for name, start_date, end_date, position in zip(
                 names, start_dates, end_dates, positions
             ):
+                if end_date == "":
+                    end_date = None
                 WorkHistory.objects.create(
                     name=name,
                     start_date=start_date,
@@ -256,5 +271,47 @@ class AddWorkHistoryView(View, LoginRequiredMixin):
                 )
 
         except Exception:
+            context = {
+                "error_message": "An error occurred. Check the form and try again."
+            }
             return render(request, self.template_name, context)
-        return redirect("home-view")
+        return redirect(self.success_url)
+
+
+class AddResumeSkillView(View, LoginRequiredMixin):
+    template_name = "resume/add-resume-skill.html"
+    page = "create-resume"
+    title = "Add Resume Skill"
+    success_url = "resume:resume-view"
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        context = {
+            "page": self.page,
+            "title": self.title,
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        names = request.POST.getlist("name")
+        levels = request.POST.getlist("level")
+
+        context = {
+            "page": self.page,
+            "title": self.title,
+        }
+
+        try:
+            resume = Resume.objects.get(id=request.session["resume_id"])
+        except Resume.DoesNotExist:
+            return render(request, self.template_name, context)
+        try:
+            for name, level in zip(names, levels):
+                Skill.objects.create(name=name, level=level, resume=resume)
+        except Exception as e:
+            print(e)
+            context = {
+                "error_message": "An error occurred. Check the form and try again."
+            }
+            return render(request, self.template_name, context)
+        return redirect(self.success_url, id=resume.id)

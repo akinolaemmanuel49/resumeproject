@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block form %}
-<form method="post" class="form-add-resume-socials" enctype="multipart/form-data">
+<form method="post" action="{% url 'resume:add-resume-socials' %}" class="form-add-resume-socials" enctype="multipart/form-data">
     {% block formContent %}
     {% csrf_token %}
     <h1 class="h3 mb-3 fw-normal">Add Resume Socials</h1>
@@ -28,6 +28,8 @@
             <!-- <span class="social-item-number">1</span> -->
         </div>
     </div>
+
+    <p class="error-message">{{ error_message }}</p>
 
     <button class="btn btn-primary w-100 py-2 add-new-social-button" id="addNewSocialItemButton"
         type="button">Add</button>
