@@ -136,7 +136,7 @@ class ResumeView(View, LoginRequiredMixin):
 
 
 class DownloadResumeAction(View, LoginRequiredMixin):
-    template_name = "resume/resume-detail-pdf.html"
+    template_name = "resume/resume-detail-pdf-i.html"
     page = "resumes"
     title = "Resume"
 
@@ -151,7 +151,7 @@ class DownloadResumeAction(View, LoginRequiredMixin):
             response = HttpResponse(content_type="application/pdf")
             response[
                 "Content-Disposition"
-            ] = f'attachment; filename={resume.first_name} {resume.last_name}\s resume.pdf"'
+            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s resume.pdf"
 
             # Find the template and render it
             template = get_template(self.template_name)
