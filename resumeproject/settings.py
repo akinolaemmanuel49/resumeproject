@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+import pdfkit
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -132,6 +134,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+WKHTMLTOPDF_CMD = os.path.join('C:/', 'Program Files', 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')
+PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

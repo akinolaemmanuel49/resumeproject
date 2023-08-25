@@ -1,15 +1,15 @@
-from typing import Any
+from typing import Any, Self
 
+import pdfkit
 from django.http import HttpRequest
 from django.shortcuts import redirect, render, HttpResponse
-from django.template.loader import get_template
 from django.views.generic import View
+from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
-from xhtml2pdf import pisa
 
+from resumeproject.settings import PDFKIT_CONFIG
 from user.models import Profile
 from resume.models import Education, Resume, Skill, Social, WorkHistory
-from resume.utils import link_callback
 
 
 # Create your views here.
@@ -135,8 +135,8 @@ class ResumeView(View, LoginRequiredMixin):
             return redirect("resume:create-resume-view")
 
 
-class DownloadResumeAction(View, LoginRequiredMixin):
-    template_name = "resume/resume-detail-pdf-i.html"
+class ResumePDFView(View, LoginRequiredMixin):
+    template_name = "resume/resume-detail-pdf.html"
     page = "resumes"
     title = "Resume"
 
@@ -145,31 +145,62 @@ class DownloadResumeAction(View, LoginRequiredMixin):
     ) -> HttpResponse:
         try:
             resume = Resume.objects.get(id=id)
-            context = {"page": self.page, "title": self.title, "resume": resume}
-
-            # Create a Django response object, and specify content_type as pdf
-            response = HttpResponse(content_type="application/pdf")
-            response[
-                "Content-Disposition"
-            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s resume.pdf"
-
-            # Find the template and render it
-            template = get_template(self.template_name)
-            html = template.render(context)
-
-            # Create a PDF
-            pisa_status = pisa.CreatePDF(
-                html, dest=response, link_callback=link_callback
-            )
-
-            # If error then show some funny view
-            if pisa_status.err:
-                return HttpResponse("We had some errors <pre>" + html + "</pre>")
-
-            return response
-
+            context = {
+                "page": self.page,
+                "title": self.title,
+                "resume": resume,
+                "is_preview": True,
+            }
+            return render(request, self.template_name, context)
         except Resume.DoesNotExist:
             return redirect("resume:create-resume-view")
+
+
+class DownloadResumeAction(View, LoginRequiredMixin):
+    page = "resumes"
+    title = "Resume"
+    template_name = "resume/resume-detail-pdf.html"
+
+    def get(
+        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        options = {
+            "page-size": "A4",
+            "margin-top": "0in",
+            "margin-right": "0in",
+            "margin-bottom": "0in",
+            "margin-left": "0in",
+            "encoding": "UTF-8",
+            "custom-header": [("Accept-Encoding", "gzip")],
+            "cookie": [
+                ("sessionid", request.COOKIES["sessionid"]),
+                ("csrftoken", request.COOKIES["csrftoken"]),
+            ],
+            "no-outline": None,
+        }
+        try:
+            resume = Resume.objects.get(id=id)
+            context = {
+                "page": self.page,
+                "title": self.title,
+                "resume": resume,
+                "is_preview": False,
+            }
+            html = render_to_string(self.template_name, context)
+
+            pdf = pdfkit.from_string(
+                html, False, configuration=PDFKIT_CONFIG, options=options
+            )
+
+            response = HttpResponse(pdf, content_type="application/pdf")
+            response[
+                "Content-Disposition"
+            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s Resume.pdf"
+            return response
+        except Resume.DoesNotExist:
+            return HttpResponse(
+                {"Error": "An error occurred"}, content_type="application/json"
+            )
 
 
 class AddResumeSocialsView(View, LoginRequiredMixin):
