@@ -1,12 +1,15 @@
 from typing import Any
 
 from django.http import HttpRequest
-from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
+from django.shortcuts import redirect, render, HttpResponse
+from django.template.loader import get_template
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from xhtml2pdf import pisa
 
 from user.models import Profile
 from resume.models import Education, Resume, Skill, Social, WorkHistory
+from resume.utils import link_callback
 
 
 # Create your views here.
@@ -128,6 +131,43 @@ class ResumeView(View, LoginRequiredMixin):
             resume = Resume.objects.get(id=id)
             context = {"page": self.page, "title": self.title, "resume": resume}
             return render(request, self.template_name, context)
+        except Resume.DoesNotExist:
+            return redirect("resume:create-resume-view")
+
+
+class DownloadResumeAction(View, LoginRequiredMixin):
+    template_name = "resume/resume-detail-pdf.html"
+    page = "resumes"
+    title = "Resume"
+
+    def get(
+        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        try:
+            resume = Resume.objects.get(id=id)
+            context = {"page": self.page, "title": self.title, "resume": resume}
+
+            # Create a Django response object, and specify content_type as pdf
+            response = HttpResponse(content_type="application/pdf")
+            response[
+                "Content-Disposition"
+            ] = f'attachment; filename={resume.first_name} {resume.last_name}\s resume.pdf"'
+
+            # Find the template and render it
+            template = get_template(self.template_name)
+            html = template.render(context)
+
+            # Create a PDF
+            pisa_status = pisa.CreatePDF(
+                html, dest=response, link_callback=link_callback
+            )
+
+            # If error then show some funny view
+            if pisa_status.err:
+                return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+            return response
+
         except Resume.DoesNotExist:
             return redirect("resume:create-resume-view")
 

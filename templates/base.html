@@ -96,6 +96,7 @@
         </ul>
     </div>
 
+    {% block container %}
     <main class="form-signin w-100 m-auto">
         {% block content %}
         <form method="post" enctype="multipart/form-data">
@@ -105,6 +106,7 @@
         </form>
         {% endblock %}
     </main>
+    {% endblock %}
 
     <script src="{% static 'dist/js/bootstrap.bundle.min.js' %}"></script>
 

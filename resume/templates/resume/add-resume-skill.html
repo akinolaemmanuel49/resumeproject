@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block form %}
-<form method="post" action="{% url 'resume:add-resume-skill' %}" class="form-add-resume-skills"
+<form method="post" action="{% url 'resume:add-resume-skills' %}" class="form-add-resume-skills"
     enctype="multipart/form-data">
     {% block formContent %}
     {% csrf_token %}

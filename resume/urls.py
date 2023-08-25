@@ -6,6 +6,7 @@ from resume.views import (
     AddResumeSocialsView,
     AddWorkHistoryView,
     CreateResumeView,
+    DownloadResumeAction,
     ResumeView,
     ResumesView,
 )
@@ -25,4 +26,9 @@ urlpatterns = [
     path("create/skill/", AddResumeSkillView.as_view(), name="add-resume-skills"),
     path("resumes/", ResumesView.as_view(), name="resumes-view"),
     path("<int:id>/", ResumeView.as_view(), name="resume-view"),
+    path(
+        "<int:id>/download/",
+        DownloadResumeAction.as_view(),
+        name="download-resume-action",
+    ),
 ]
