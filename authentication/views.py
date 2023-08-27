@@ -33,7 +33,7 @@ class AuthLoginView(LoginView):
         else:
             error_message = "Invalid login credentials."
             context = {"error_message": error_message, "title": "Login"}
-            return render(request, self.template_name, context)
+            return render(request, self.template_name, context, status=401)
 
 
 class AuthLogoutView(LogoutView):
