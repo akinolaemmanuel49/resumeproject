@@ -139,6 +139,7 @@ STATICFILES_DIRS = [
 possible_paths = [
     '/usr/local/bin/wkhtmltopdf',
     '/usr/bin/wkhtmltopdf',
+    '~/wkhtmltox/',
 ]
 
 if sys.platform == 'win32':
