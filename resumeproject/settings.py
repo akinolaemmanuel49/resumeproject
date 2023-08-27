@@ -139,7 +139,8 @@ STATICFILES_DIRS = [
 if sys.platform == 'win32':
     WKHTMLTOPDF_CMD = os.path.join('C:/', 'Program Files', 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')
 if sys.platform == 'linux' or sys.platform == 'linux2':
-    WKHTMLTOPDF_CMD = "/usr/local/bin/wkthmltopdf"
+    # WKHTMLTOPDF_CMD = "/usr/local/bin/wkthmltopdf"
+    pass
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
 # Default primary key field type
