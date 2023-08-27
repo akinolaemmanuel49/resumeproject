@@ -21,10 +21,6 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: WKHTMLTOIMAGE
-      uses: huseinayub/wkhtmltoimage-action@v1
-      with:
-        list: hosts.txt
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
