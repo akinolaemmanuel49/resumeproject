@@ -166,6 +166,7 @@ cython_debug/
 
 # Static and media files
 images
+!wkhtmltopdf\lib\wkhtmltox.lib
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
