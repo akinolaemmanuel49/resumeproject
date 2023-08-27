@@ -26,7 +26,7 @@ class AuthViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 302)  # Redirect
         self.assertRedirects(response, reverse("user:profile-view"))
 
-    def test_login_view_post_failure(self):
+    def test_login_view_post_unauthorized(self):
         response = self.client.post(
             reverse("auth:login-view"),
             {"email": "testuser@mail.com", "password": "psssword"},

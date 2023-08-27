@@ -27,7 +27,17 @@
 </div>
 
 <p>Already have an account? <a href="{% url 'auth:login-view' %}">Log in</a></p>
-<p>{{ error_message }}</p>
+<p>
+<ul>
+    {% if error_message %}
+    {% for error in error_message %}
+    <li class="error-list">
+        {{ error }}
+    </li>
+    {% endfor %}
+    {% endif %}
+</ul>
+</p>
 
 <button class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
 

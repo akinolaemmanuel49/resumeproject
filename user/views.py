@@ -4,6 +4,8 @@ from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from pydantic import validate_email
 from pydantic_core import PydanticCustomError
 
@@ -18,13 +20,18 @@ class UserChangePasswordAction(View, LoginRequiredMixin):
 
         user = request.user
         if not user.is_authenticated:
-            return JsonResponse({"Error": "User not found."})
+            return JsonResponse({"Error": "User not found."}, status=404)
 
         if new_password == new_password_confirm and user.check_password(old_password):
-            user.set_password(new_password)
-            user.save()
-            return JsonResponse({"Message": "Password successfully changed."})
-        return JsonResponse({"Error": "Invalid input."})
+            try:
+                if validate_password(new_password):
+                    user.set_password(new_password)
+                    user.save()
+                    return JsonResponse({"Message": "Password successfully changed."})
+            except ValidationError as e:
+                return JsonResponse({"Error": list(e.messages)}, status=400)
+            return JsonResponse
+        return JsonResponse({"Error": "Invalid input."}, status=400)
 
 
 class UserChangeEmailAction(View, LoginRequiredMixin):
@@ -46,6 +53,7 @@ class UserChangeEmailAction(View, LoginRequiredMixin):
         user.save()
         return JsonResponse({"Message": "User email was successfully changed."})
 
+
 class UserDeleteAction(View, LoginRequiredMixin):
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         user = User.objects.filter(id=request.user.id).first()
@@ -56,63 +64,100 @@ class UserDeleteAction(View, LoginRequiredMixin):
 
 class UserSettingsView(View, LoginRequiredMixin):
     template_name = "user/settings.html"
+    page = "settings"
+    title = "Settings"
+    context = {
+        "page": page,
+        "title": title,
+    }
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         user = User.objects.filter(id=request.user.id).first()
         if not user:
-            return redirect("account:login-view")
+            return redirect("auth:login-view")
 
-        context = {
-            "title": "Settings",
-            "page": "settings",
-        }
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, self.context)
 
 
 class UserProfileView(View, LoginRequiredMixin):
     template_name = "user/profile.html"
     page = "profile"
     title = "Profile"
+    context = {
+        "page": page,
+        "title": title,
+    }
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        user = User.objects.filter(id=request.user.id).first()
+        if not user:
+            return redirect("auth:login-view")
         user_profile = Profile.objects.filter(user=request.user).first()
         if not user_profile:
-            return redirect("user:update-profile-view")
+            return redirect("user:edit-profile-view")
 
-        context = {
-            "user_profile": user_profile,
-            "page": self.page,
-            "title": self.title,
-        }
-        return render(request, self.template_name, context)
+        self.context.update(
+            {
+                "user_profile": user_profile,
+            }
+        )
+        return render(request, self.template_name, self.context)
 
 
 class UserEditProfileView(View, LoginRequiredMixin):
     template_name = "user/update-profile.html"
     page = "profile"
     title = "Edit Profile"
+    context = {
+        "page": page,
+        "title": title,
+    }
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        user_profile, created = Profile.objects.get_or_create(user=request.user)
+        user = User.objects.filter(id=request.user.id).first()
+        if not user:
+            return redirect("auth:login-view")
+        user_profile_exists = Profile.objects.filter(user=request.user).exists()
+        if user_profile_exists:
+            user_profile = Profile.objects.get(user=request.user)
 
-        context = {
-            "user_profile": user_profile,
-            "page": self.page,
-            "title": self.title,
-        }
-        return render(request, self.template_name, context)
+            self.context.update({"user_profile": user_profile})
+            return render(request, self.template_name, self.context)
+
+        return render(request, self.template_name, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        user = User.objects.filter(id=request.user.id).first()
+        if not user:
+            return redirect("auth:login-view")
+
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         email = request.POST.get("email")
         phone = request.POST.get("phone")
 
-        user_profile, created = Profile.objects.get_or_create(user=request.user)
-        user_profile.first_name = first_name
-        user_profile.last_name = last_name
-        user_profile.email = email
-        user_profile.phone = phone
+        user_profile_exists = Profile.objects.filter(user=request.user).exists()
+        if user_profile_exists:
+            user_profile = Profile.objects.get(user=request.user)
+            user_profile.first_name = first_name
+            user_profile.last_name = last_name
+            user_profile.email = email
+            user_profile.phone = phone
+
+            if "image" in request.FILES:
+                user_profile.image = request.FILES["image"]
+
+            user_profile.save()
+
+            return redirect("user:profile-view")
+
+        user_profile = Profile.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone=phone,
+            user=request.user,
+        )
 
         if "image" in request.FILES:
             user_profile.image = request.FILES["image"]
@@ -124,21 +169,45 @@ class UserEditProfileView(View, LoginRequiredMixin):
 
 class UserCreateView(View):
     template_name = "user/register.html"
+    title = "Register"
+    context = {"title": title}
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return render(request, self.template_name)
+        return render(request, self.template_name, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         email = request.POST.get("email")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
+        if User.objects.filter(email=email).exists():
+            self.context.update(
+                {
+                    "error_message": [
+                        "Invalid input. This email address is already \
+                associated with an account."
+                    ]
+                }
+            )
+            return render(request, self.template_name, self.context, status=409)
+
         if password == confirm_password:
             if not User.objects.filter(email=email).exists():
+                try:
+                    validate_password(password)
+                except ValidationError as e:
+                    self.context.update({"error_message": list(e.messages)})
+                    return render(request, self.template_name, self.context, status=400)
                 User.objects.create_user(email, password)
                 return redirect("auth:login-view")
+        self.context.update(
+            {
+                "error_message": ["Invalid input. Passwords do not match"],
+            }
+        )
         return render(
             request,
             self.template_name,
-            {"error_message": "Invalid input.", "title": "Register"},
+            self.context,
+            status=400,
         )
