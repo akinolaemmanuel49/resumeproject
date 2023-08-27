@@ -32,7 +32,7 @@ downloads/
 eggs/
 .eggs/
 lib/
-!lib\wkhtmltox.lib
+!lib/wkhtmltox.lib
 lib64/
 parts/
 sdist/
