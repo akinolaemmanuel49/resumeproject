@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 import pdfkit
@@ -135,7 +136,10 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-WKHTMLTOPDF_CMD = os.path.join('C:/', 'Program Files', 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')
+if sys.platform == 'win32':
+    WKHTMLTOPDF_CMD = os.path.join('C:/', 'Program Files', 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')
+if sys.platform == 'linux' or sys.platform == 'linux2':
+    WKHTMLTOPDF_CMD = "/usr/local/bin/wkthmltopdf"
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
 # Default primary key field type
