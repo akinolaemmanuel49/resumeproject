@@ -56,9 +56,11 @@ class UserChangeEmailAction(View, LoginRequiredMixin):
 
 class UserDeleteAction(View, LoginRequiredMixin):
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        user = User.objects.filter(id=request.user.id).first()
-        if user:
+        try:
+            user = User.objects.get(id=request.user.id)
             user.delete()
+        except Exception:
+            return redirect("auth:login-view")    
         return redirect("auth:login-view")
 
 
