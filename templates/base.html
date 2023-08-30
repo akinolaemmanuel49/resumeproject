@@ -13,10 +13,6 @@
 
     <title>{{ title }}</title>
 
-    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/"> -->
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-
     <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
@@ -110,7 +106,10 @@
     </main>
     {% endblock %}
 
-    <script src="{% static 'dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'dist/js/bootstrap.min.js' %}"></script>
+
+    {% block customScript %}
+    {% endblock %}
 
 </body>
 
