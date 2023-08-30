@@ -1,12 +1,10 @@
 from typing import Any
-from django.contrib.auth.forms import AuthenticationForm
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import authenticate, login
-from django.contrib import messages
 
 from user.models import Profile
 
