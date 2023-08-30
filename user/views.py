@@ -172,10 +172,17 @@ class UserProfileView(ProtectedView):
 
 
 class UserSettingsView(ProtectedView):
+    template = "user/settings.html"
+    page = "settings"
+    title = "Settings"
+    context = {
+        "page": page,
+        "title": title,
+    }
     next_page = "user:settings-view"
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return HttpResponse("Settings")
+        return render(request, self.template, self.context)
 
 
 class UserDeleteAction(ProtectedView):
