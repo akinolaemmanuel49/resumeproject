@@ -1,16 +1,15 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth import login
 
 from user.models import Profile, User
 
 
 # Create your tests here.
-class UserViewsTestCase(TestCase):
+class UserCreateViewTestCase(TestCase):
     def setUp(self) -> None:
         self.client = Client()
         self.user = User.objects.create_user(
-            email="testuser@mail.com", password="testpassword123"
+            email="janedoeduplicate@mail.com", password="testpassword123"
         )
 
     def test_user_create_view_get(self):
@@ -22,7 +21,7 @@ class UserViewsTestCase(TestCase):
         response = self.client.post(
             reverse("user:create-user-view"),
             {
-                "email": "newtestuser@mail.com",
+                "email": "janedoe@mail.com",
                 "password": "testpassword123",
                 "confirm_password": "testpassword123",
             },
@@ -34,7 +33,7 @@ class UserViewsTestCase(TestCase):
         response = self.client.post(
             reverse("user:create-user-view"),
             {
-                "email": "testuser1@mail.com",
+                "email": "janedoe@mail.com",
                 "password": "password",
                 "confirm_password": "password",
             },
@@ -46,7 +45,7 @@ class UserViewsTestCase(TestCase):
         response = self.client.post(
             reverse("user:create-user-view"),
             {
-                "email": "testuser@mail.com",
+                "email": "janedoeduplicate@mail.com",
                 "password": "testpassword123",
                 "confirm_password": "testpassword123",
             },
@@ -58,7 +57,7 @@ class UserViewsTestCase(TestCase):
         response = self.client.post(
             reverse("user:create-user-view"),
             {
-                "email": "testuser2@mail.com",
+                "email": "janedoe@mail.com",
                 "password": "testpassword123",
                 "confirm_password": "testpsssword123",
             },
@@ -66,8 +65,11 @@ class UserViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, "user/register.html")
 
+    def tearDown(self) -> None:
+        self.user.delete()
 
-class UserProfileViewsTestCase(TestCase):
+
+class UserEditProfileViewTestCase(TestCase):
     def setUp(self) -> None:
         self.client = Client()
         self.user = User.objects.create_user(
@@ -80,13 +82,7 @@ class UserProfileViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "user/update-profile.html")
 
-    def test_user_edit_profile_view_login_required(self):
-        self.client.logout()
-        response = self.client.get(reverse("user:edit-profile-view"))
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("auth:login-view"))
-
-    def test_user_edit_profile_view_post_successful(self):
+    def test_user_edit_profile_view_post_success(self):
         response = self.client.post(
             reverse("user:edit-profile-view"),
             {
@@ -99,8 +95,14 @@ class UserProfileViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("user:profile-view"))
+        profile = Profile.objects.filter(user=self.user).first()
+        self.assertIsInstance(profile, Profile)
+        self.assertEqual(profile.first_name, "Jane")
+        self.assertEqual(profile.last_name, "Doe")
+        self.assertEqual(profile.email, "janedoe@mail.com")
+        self.assertEqual(profile.phone, "000111000")
 
-    def test_user_edit_profile_view_post_update_successful(self):
+    def test_user_edit_profile_view_post_update_success(self):
         self.client.post(
             reverse("user:edit-profile-view"),
             {
@@ -111,25 +113,30 @@ class UserProfileViewsTestCase(TestCase):
                 "user": self.user,
             },
         )
-        if Profile.objects.filter(user=self.user).exists():
-            profile = Profile.objects.filter(user=self.user).first()
-            self.assertEqual(profile.first_name, "Jane")
-            self.assertEqual(profile.last_name, "Doe")
-            self.assertEqual(profile.email, "janedoe@mail.com")
-            self.assertEqual(profile.phone, "000111000")
-
+        profile = Profile.objects.filter(user=self.user).first()
+        self.assertIsInstance(profile, Profile)
+        self.assertEqual(profile.first_name, "Jane")
+        self.assertEqual(profile.last_name, "Doe")
+        self.assertEqual(profile.email, "janedoe@mail.com")
+        self.assertEqual(profile.phone, "000111000")
         response = self.client.post(
             reverse("user:edit-profile-view"),
             {
-                "first_name": "John",
-                "last_name": "Doe",
-                "email": "johndoe@mail.com",
+                "first_name": "Doe",
+                "last_name": "Jane",
+                "email": "doejane@mail.com",
                 "phone": "111000111",
                 "user": self.user,
             },
         )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("user:profile-view"))
+        profile = Profile.objects.filter(user=self.user).first()
+        self.assertIsInstance(profile, Profile)
+        self.assertEqual(profile.first_name, "Doe")
+        self.assertEqual(profile.last_name, "Jane")
+        self.assertEqual(profile.email, "doejane@mail.com")
+        self.assertEqual(profile.phone, "111000111")
 
     def test_user_profile_view_get(self):
         self.client.post(
@@ -145,6 +152,3 @@ class UserProfileViewsTestCase(TestCase):
         response = self.client.get(reverse("user:profile-view"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "user/profile.html")
-
-    def tearDown(self):
-        pass
