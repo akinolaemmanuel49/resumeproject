@@ -1,7 +1,6 @@
 from django.urls import path
 
 from user.views import (
-    DummyView,
     UserChangeEmailAction,
     UserChangePasswordAction,
     UserCreateView,
@@ -30,5 +29,4 @@ urlpatterns = [
         name="change-password-action",
     ),
     path("delete/", UserDeleteAction.as_view(), name="delete-user-action"),
-    path("dummy/", DummyView.as_view(), name="dummy-view"),
 ]
