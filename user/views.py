@@ -1,16 +1,15 @@
 from typing import Any
 
 from django.http import HttpRequest, JsonResponse, HttpResponse
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from pydantic import validate_email
 from pydantic_core import PydanticCustomError
-from resumeproject.utils import email_error_message_handler
 
+from resumeproject.utils import email_error_message_handler
 from user.models import Profile, User
 from resumeproject.utils import ProtectedView
 
@@ -151,9 +150,6 @@ class UserProfileView(ProtectedView):
     }
     next_page = "user:profile-view"
 
-    def add_message(self, request, message, level=messages.INFO):
-        messages.add_message(request, level, message)
-
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         try:
             # Get the profile for the authenticated user.
@@ -187,21 +183,59 @@ class UserSettingsView(ProtectedView):
 
 class UserDeleteAction(ProtectedView):
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return HttpResponse("DELETE")
+        try:
+            user = User.objects.get(id=request.user.id)
+            user.delete()
+            return redirect("home-view")
+        except Exception:
+            self.add_message(
+                request, "An unexpected error has occurred.", messages.ERROR
+            )
+            return redirect("home-view")
 
 
 class UserChangeEmailAction(ProtectedView):
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return HttpResponse("EMAIL")
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        new_email = request.POST.get("new_email")
+
+        try:
+            validate_email(new_email)
+        except PydanticCustomError:
+            return JsonResponse({"Error": "Invalid email address."}, status=400)
+        if User.objects.filter(email=new_email).exists():
+            return JsonResponse(
+                {"Error": "An account is already associated with this email address."},
+                status=400,
+            )
+
+        user = request.user
+        user.email = new_email
+        user.save()
+        return JsonResponse(
+            {"Message": "User email was successfully changed."}, status=200
+        )
 
 
 class UserChangePasswordAction(ProtectedView):
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return HttpResponse("PASSWORD")
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> JsonResponse:
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+        new_password_confirm = request.POST.get("new_password_confirm")
 
+        user = request.user
 
-class DummyView(ProtectedView):
-    next_page = "user:dummy-view"
-
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        return HttpResponse(content="Hell Yeah!")
+        if new_password == new_password_confirm:
+            try:
+                if validate_password(new_password) is None:
+                    if user.check_password(old_password):
+                        user.set_password(new_password)
+                        user.save()
+                        return JsonResponse(
+                            {"Message": "Password successfully changed."}, status=200
+                        )
+            except ValidationError as e:
+                return JsonResponse({"Error": list(e.messages)}, status=400)
+        else:
+            return JsonResponse(
+                {"Error": "Invalid input. Passwords do not match."}, status=400
+            )
