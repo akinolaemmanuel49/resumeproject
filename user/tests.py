@@ -77,12 +77,12 @@ class UserEditProfileViewTestCase(TestCase):
         )
         self.client.login(email="janedoe@mail.com", password="testpassword123")
 
-    def test_user_edit_profile_view_get(self):
+    def test_user_edit_profile_view_get(self) -> None:
         response = self.client.get(reverse("user:edit-profile-view"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "user/update-profile.html")
 
-    def test_user_edit_profile_view_post_success(self):
+    def test_user_edit_profile_view_post_success(self) -> None:
         response = self.client.post(
             reverse("user:edit-profile-view"),
             {
@@ -102,7 +102,7 @@ class UserEditProfileViewTestCase(TestCase):
         self.assertEqual(profile.email, "janedoe@mail.com")
         self.assertEqual(profile.phone, "000111000")
 
-    def test_user_edit_profile_view_post_update_success(self):
+    def test_user_edit_profile_view_post_update_success(self) -> None:
         self.client.post(
             reverse("user:edit-profile-view"),
             {
@@ -138,7 +138,7 @@ class UserEditProfileViewTestCase(TestCase):
         self.assertEqual(profile.email, "doejane@mail.com")
         self.assertEqual(profile.phone, "111000111")
 
-    def test_user_profile_view_get(self):
+    def test_user_profile_view_get(self) -> None:
         self.client.post(
             reverse("user:edit-profile-view"),
             {
@@ -152,3 +152,38 @@ class UserEditProfileViewTestCase(TestCase):
         response = self.client.get(reverse("user:profile-view"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "user/profile.html")
+
+    def tearDown(self) -> None:
+        self.user.delete()
+
+
+class UserProfileViewTestCase(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+
+    def test_user_profile_view_get_profile_present(self) -> None:
+        self.client.post(
+            reverse("user:edit-profile-view"),
+            {
+                "first_name": "Jane",
+                "last_name": "Doe",
+                "email": "janedoe@mail.com",
+                "phone": "000111000",
+                "user": self.user,
+            },
+        )
+        response = self.client.get(reverse("user:profile-view"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "user/profile.html")
+
+    def test_user_profile_view_get_profile_absent(self) -> None:
+        response = self.client.get((reverse("user:profile-view")))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("user:edit-profile-view"))
+
+    def tearDown(self) -> None:
+        self.user.delete()
