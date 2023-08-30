@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-import sys
 from pathlib import Path
 
 import pdfkit
@@ -30,6 +29,9 @@ SECRET_KEY = 'django-insecure-k430&p+wieh0c(+jtf=z=-#%k(ts)gx$cpky9q(ax!-i%a4^pp
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+LOGIN_URL = "auth:login-view"
+LOGOUT_URL = "auth:logout-view"
 
 
 # Application definition

@@ -103,9 +103,8 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteAccountModal.style.display = "none";
     });
 
-    deleteAccountButton.addEventListener("click", function (event) {
+    deleteAccountButton.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        window.location.replace("http://127.0.0.1:8000/auth/login");
     })
 });

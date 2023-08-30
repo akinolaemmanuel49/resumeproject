@@ -1,0 +1,41 @@
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.alert-20 {
+    background-color: #d9edf7;
+    color: #31708f;
+}
+
+.alert-25 {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.alert-30 {
+    background-color: #fcf8e3;
+    color: #8a6d3b;
+}
+
+.alert-40 {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 15px;
+    font-weight: bolder;
+    color: initial;
+    border-radius: 20px;
+    opacity: .5;
+}
+
+.close:hover {
+    opacity: 1;
+}
