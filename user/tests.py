@@ -155,6 +155,7 @@ class UserEditProfileViewTestCase(TestCase):
 
     def tearDown(self) -> None:
         self.user.delete()
+        self.client.logout()
 
 
 class UserProfileViewTestCase(TestCase):
@@ -181,9 +182,198 @@ class UserProfileViewTestCase(TestCase):
         self.assertTemplateUsed(response, "user/profile.html")
 
     def test_user_profile_view_get_profile_absent(self) -> None:
-        response = self.client.get((reverse("user:profile-view")))
+        response = self.client.get(reverse("user:profile-view"))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("user:edit-profile-view"))
 
     def tearDown(self) -> None:
         self.user.delete()
+        self.client.logout()
+
+
+class UserSettingsViewTestCase(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+
+    def test_user_settings_view_get(self) -> None:
+        response = self.client.get(reverse("user:settings-view"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "user/settings.html")
+
+    def tearDown(self) -> None:
+        self.user.delete()
+        self.client.logout()
+
+
+class UserDeleteActionTestCase(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+
+    def test_user_delete_action_get_success(self) -> None:
+        response = self.client.get(reverse("user:delete-user-action"))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("home-view"))
+
+    def tearDown(self) -> None:
+        self.user.delete()
+        self.client.logout()
+
+
+class UserChangeEmailActionTestCase(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+
+    def test_user_change_email_action_post_success(self) -> None:
+        response = self.client.post(
+            reverse("user:change-email-action"), {"new_email": "doejane@mail.com"}
+        )
+        self.client.logout()
+        self.client.login(email="doejane@mail.com", password="testpassword123")
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {"Message": "User email was successfully changed."},
+        )
+
+    def test_user_change_email_action_post_invalid_email(self) -> None:
+        response = self.client.post(
+            reverse("user:change-email-action"), {"new_email": "doejanemail.com"}
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {"Error": "Invalid email address."},
+        )
+
+    def test_user_change_email_action_post_duplicate_email(self) -> None:
+        self.client.post(
+            reverse("user:create-user-view"),
+            {
+                "email": "janedoeduplicate@mail.com",
+                "password": "testpassword123",
+                "confirm_password": "testpassword123",
+            },
+        )
+        response = self.client.post(
+            reverse("user:change-email-action"),
+            {"new_email": "janedoeduplicate@mail.com"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {"Error": "An account is already associated with this email address."},
+        )
+
+    def tearDown(self) -> None:
+        self.user.delete()
+        self.client.logout()
+
+
+class UserChangePasswordActionTestCase(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+
+    def test_user_change_password_action_post_success(self) -> None:
+        response = self.client.post(
+            reverse("user:change-password-action"),
+            {
+                "old_password": "testpassword123",
+                "new_password": "newtestpassword123",
+                "new_password_confirm": "newtestpassword123",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {"Message": "Password successfully changed."},
+        )
+
+    def test_user_change_password_action_post_passwords_mismatch(self) -> None:
+        response = self.client.post(
+            reverse("user:change-password-action"),
+            {
+                "old_password": "testpassword123",
+                "new_password": "newtestpassword12",
+                "new_password_confirm": "newtestpassword13",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {"Error": "Invalid input. Passwords do not match."},
+        )
+
+    def test_user_change_password_action_post_validation_error_below_minimum_length(
+        self,
+    ) -> None:
+        response = self.client.post(
+            reverse("user:change-password-action"),
+            {
+                "old_password": "testpassword123",
+                "new_password": "A5m1r1",
+                "new_password_confirm": "A5m1r1",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {
+                "Error": [
+                    "This password is too short. It must contain at least 8 characters."
+                ]
+            },
+        )
+
+    def test_user_change_password_action_post_validation_error_password_is_common(
+        self,
+    ) -> None:
+        response = self.client.post(
+            reverse("user:change-password-action"),
+            {
+                "old_password": "testpassword123",
+                "new_password": "password",
+                "new_password_confirm": "password",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {"Error": ["This password is too common."]},
+        )
+
+    def test_user_change_password_action_post_validation_error_password_is_numeric(
+        self,
+    ) -> None:
+        response = self.client.post(
+            reverse("user:change-password-action"),
+            {
+                "old_password": "testpassword123",
+                "new_password": "01011122345",
+                "new_password_confirm": "01011122345",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding="utf-8"),
+            {"Error": ["This password is entirely numeric."]},
+        )
+
+    def tearDown(self) -> None:
+        self.user.delete()
+        self.client.logout()
