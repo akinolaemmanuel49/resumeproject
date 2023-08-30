@@ -179,6 +179,9 @@
     </header>
 
     <main class="px-3">
+      {% if messages %}
+      {% include 'messages.html' %}
+      {% endif %}
       <h1>Resume Builder.</h1>
       {% if user.profile %}
       <p class="lead">Hello {{ user.profile.first_name }}, Build your resume using resume builder.</p>
