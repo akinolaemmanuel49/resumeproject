@@ -38,7 +38,13 @@ jobs:
         EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
         DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
       run: |
-        echo ${{ secrets.EMAIL_HOST }}
+        export SECRET_KEY=${{ secrets.EMAIL_HOST }}
+        export EMAIL_HOST=${{ secrets.EMAIL_HOST }}
+        export EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
+        export EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
+        export EMAIL_PORT=${{ secrets.EMAIL_PORT }}
+        export EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }}
+        export DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
 
     - name: Run Tests
       run: |
