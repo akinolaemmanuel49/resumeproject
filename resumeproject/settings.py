@@ -17,6 +17,7 @@ import pdfkit
 
 from resumeproject.env_var import Settings as Env
 
+
 env = Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
