@@ -73,11 +73,35 @@
             <hr>
             <ul class="item-container">
                 {% for social in resume.social_set.all %}
-                <li>{{ social.name }}: <a href="{{ social.url }}">{{ social.url }}</a></li>
+                <li>{{ social.name }}: <a href="{{ social.url }}" target="_blank">{{ social.url }}</a></li>
                 {% endfor %}
             </ul>
         </div>
     </div>
-    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
-</main>
+    {% if is_preview == True %}
+        <div class="conditional-button">
+            <a href="{% url 'resume:preview-pdf-resume-view' id=resume.id %}" target="_blank" class="download-button">Preview</a>
+        </div>
+
+    </main>
+    <style>
+        .conditional-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-button {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+    {% endif %}
+    </main>
 {% endblock %}

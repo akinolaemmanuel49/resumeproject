@@ -3,21 +3,21 @@ from typing import Any
 import pdfkit
 from django.http import HttpRequest
 from django.shortcuts import redirect, render, HttpResponse
-from django.views.generic import View
 from django.template.loader import render_to_string
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from resumeproject.settings import PDFKIT_CONFIG
 from user.models import Profile
 from resume.models import Education, Resume, Skill, Social, WorkHistory
+from resumeproject.utils import ProtectedView
 
 
 # Create your views here.
-class CreateResumeView(View, LoginRequiredMixin):
-    template_name = "resume/create-resume.html"
+class CreateResumeView(ProtectedView):
+    template = "resume/create-resume.html"
     success_url = "resume:add-resume-socials"
     page = "create-resume"
     title = "Create Resume"
+    context = {"title": title, "page": page}
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         try:
@@ -30,21 +30,21 @@ class CreateResumeView(View, LoginRequiredMixin):
                 Resume.objects.filter(user=request.user).all().order_by("-created_at")
             )
         except Resume.DoesNotExist:
-            context = {
+            self.context.update(
+                {
+                    "user_profile": user_profile,
+                }
+            )
+            return render(request, self.template, self.context)
+
+        self.context.update(
+            {
                 "user_profile": user_profile,
-                "page": self.page,
-                "title": self.title,
+                "user_resumes": user_resumes,
             }
-            return render(request, self.template_name, context)
+        )
 
-        context = {
-            "user_profile": user_profile,
-            "user_resumes": user_resumes,
-            "page": self.page,
-            "title": self.title,
-        }
-
-        return render(request, self.template_name, context)
+        return render(request, self.template, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         title = request.POST.get("title")
@@ -69,31 +69,28 @@ class CreateResumeView(View, LoginRequiredMixin):
                 resume.image = request.FILES["image"]
 
             resume.save()
-            print("RESUME ID: ", resume.id)
             request.session["resume_id"] = resume.id
             return redirect(self.success_url)
         except Exception:
             try:
                 user_profile = Profile.objects.get(user=request.user)
-                context = {
-                    "user_profile": user_profile,
-                    "page": self.page,
-                    "title": self.title,
-                    "error_message": "An error occurred. Check the form and try again.",
-                }
-                return render(request, self.template_name, context)
+                self.context.update(
+                    {
+                        "user_profile": user_profile,
+                        "error_message": "An error occurred. \
+                            Check the form and try again.",
+                    }
+                )
+                return render(request, self.template, self.context)
             except Profile.DoesNotExist:
-                context = {
-                    "page": self.page,
-                    "title": self.title,
-                }
-                return render(request, self.template_name, context)
+                return render(request, self.template, self.context)
 
 
-class ResumesView(View, LoginRequiredMixin):
-    template_name = "resume/resumes.html"
+class ResumesView(ProtectedView):
+    template = "resume/resumes.html"
     page = "resumes"
     title = "Resumes"
+    context = {"title": title, "page": page}
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         try:
@@ -101,75 +98,74 @@ class ResumesView(View, LoginRequiredMixin):
                 Resume.objects.filter(user=request.user).all().order_by("-created_at")
             )
         except Resume.DoesNotExist:
-            context = {
-                "page": self.page,
-                "title": self.title,
+            return render(request, self.template, self.context)
+
+        self.context.update(
+            {
+                "user_resumes": user_resumes,
             }
-            return render(request, self.template_name, context)
+        )
 
-        context = {
-            "user_resumes": user_resumes,
-            "page": self.page,
-            "title": self.title,
-        }
-
-        return render(request, self.template_name, context)
+        return render(request, self.template, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         pass
 
 
-class ResumeView(View, LoginRequiredMixin):
-    template_name = "resume/resume-detail.html"
+class ResumeView(ProtectedView):
+    template = "resume/resume-detail.html"
     page = "resumes"
     title = "Resume"
+    context = {"title": title, "page": page}
 
     def get(
         self, request: HttpRequest, id: int, *args: str, **kwargs: Any
     ) -> HttpResponse:
         try:
             resume = Resume.objects.get(id=id)
-            context = {"page": self.page, "title": self.title, "resume": resume}
-            return render(request, self.template_name, context)
+            self.context.update({"resume": resume, "is_preview": True})
+            return render(request, self.template, self.context)
         except Resume.DoesNotExist:
             return redirect("resume:create-resume-view")
 
 
-class ResumePDFView(View, LoginRequiredMixin):
-    template_name = "resume/resume-detail-pdf.html"
+class ResumePDFView(ProtectedView):
+    template = "resume/resume-detail-pdf.html"
     page = "resumes"
     title = "Resume"
+    context = {"title": title, "page": page}
 
     def get(
         self, request: HttpRequest, id: int, *args: str, **kwargs: Any
     ) -> HttpResponse:
         try:
             resume = Resume.objects.get(id=id)
-            context = {
-                "page": self.page,
-                "title": self.title,
-                "resume": resume,
-                "is_preview": True,
-            }
-            return render(request, self.template_name, context)
+            self.context.update(
+                {
+                    "resume": resume,
+                    "is_preview": True,
+                }
+            )
+            return render(request, self.template, self.context)
         except Resume.DoesNotExist:
             return redirect("resume:create-resume-view")
 
 
-class DownloadResumeAction(View, LoginRequiredMixin):
+class DownloadResumeAction(ProtectedView):
+    template = "resume/resume-detail-pdf.html"
     page = "resumes"
     title = "Resume"
-    template_name = "resume/resume-detail-pdf.html"
+    context = {"title": title, "page": page}
 
     def get(
         self, request: HttpRequest, id: int, *args: str, **kwargs: Any
     ) -> HttpResponse:
         options = {
-            "page-size": "A4",
-            "margin-top": "0in",
-            "margin-right": "0in",
-            "margin-bottom": "0in",
-            "margin-left": "0in",
+            "page-size": "letter",
+            "margin-top": "0.00001in",
+            "margin-right": "0.00001in",
+            "margin-bottom": "0.00001in",
+            "margin-left": "0.00001in",
             "encoding": "UTF-8",
             "custom-header": [("Accept-Encoding", "gzip")],
             "cookie": [
@@ -180,13 +176,13 @@ class DownloadResumeAction(View, LoginRequiredMixin):
         }
         try:
             resume = Resume.objects.get(id=id)
-            context = {
-                "page": self.page,
-                "title": self.title,
-                "resume": resume,
-                "is_preview": False,
-            }
-            html = render_to_string(self.template_name, context)
+            self.context.update(
+                {
+                    "resume": resume,
+                    "is_preview": False,
+                }
+            )
+            html = render_to_string(self.template, self.context)
 
             pdf = pdfkit.from_string(
                 html, False, configuration=PDFKIT_CONFIG, options=options
@@ -195,7 +191,8 @@ class DownloadResumeAction(View, LoginRequiredMixin):
             response = HttpResponse(pdf, content_type="application/pdf")
             response[
                 "Content-Disposition"
-            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s Resume.pdf"
+            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s \
+                Resume.pdf"
             return response
         except Resume.DoesNotExist:
             return HttpResponse(
@@ -203,57 +200,44 @@ class DownloadResumeAction(View, LoginRequiredMixin):
             )
 
 
-class AddResumeSocialsView(View, LoginRequiredMixin):
-    template_name = "resume/add-resume-socials.html"
+class AddResumeSocialsView(ProtectedView):
+    template = "resume/add-resume-socials.html"
     page = "create-resume"
     title = "Add Resume Socials"
     success_url = "resume:add-resume-education"
+    context = {"title": title, "page": page}
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
-        return render(request, self.template_name, context)
+        return render(request, self.template, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         names = request.POST.getlist("name")
         urls = request.POST.getlist("url")
 
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
         try:
             resume = Resume.objects.get(id=request.session["resume_id"])
         except Resume.DoesNotExist:
-            return render(request, self.template_name, context)
+            return render(request, self.template, self.context)
         try:
             for name, url in zip(names, urls):
                 Social.objects.create(name=name, url=url, resume=resume)
         except Exception:
-            context = {
-                "error_message": "An error occurred. Check the form and try again."
-            }
-            return render(request, self.template_name, context)
+            self.context.update(
+                {"error_message": "An error occurred. Check the form and try again."}
+            )
+            return render(request, self.template, self.context)
         return redirect(self.success_url)
 
 
-class AddEducationView(View, LoginRequiredMixin):
-    template_name = "resume/add-resume-education.html"
+class AddEducationView(ProtectedView):
+    template = "resume/add-resume-education.html"
     page = "create-resume"
     title = "Add Resume Educational Background"
     success_url = "resume:add-resume-work-history"
+    context = {"title": title, "page": page}
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
-        return render(request, self.template_name, context)
+        return render(request, self.template, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         institutions = request.POST.getlist("institution")
@@ -261,15 +245,10 @@ class AddEducationView(View, LoginRequiredMixin):
         end_dates = request.POST.getlist("end_date")
         degrees = request.POST.getlist("degree")
 
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
         try:
             resume = Resume.objects.get(id=request.session["resume_id"])
         except Resume.DoesNotExist:
-            return render(request, self.template_name, context)
+            return render(request, self.template, self.context)
         try:
             for institution, start_date, end_date, degree in zip(
                 institutions, start_dates, end_dates, degrees
@@ -283,26 +262,22 @@ class AddEducationView(View, LoginRequiredMixin):
                 )
 
         except Exception:
-            context = {
-                "error_message": "An error occurred. Check the form and try again."
-            }
-            return render(request, self.template_name, context)
+            self.context.update(
+                {"error_message": "An error occurred. Check the form and try again."}
+            )
+            return render(request, self.template, self.context)
         return redirect(self.success_url)
 
 
-class AddWorkHistoryView(View, LoginRequiredMixin):
-    template_name = "resume/add-resume-work-history.html"
+class AddWorkHistoryView(ProtectedView):
+    template = "resume/add-resume-work-history.html"
     page = "create-resume"
     title = "Add Resume Work History"
     success_url = "resume:add-resume-skills"
+    context = {"title": title, "page": page}
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
-        return render(request, self.template_name, context)
+        return render(request, self.template, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         names = request.POST.getlist("organization_name")
@@ -310,18 +285,10 @@ class AddWorkHistoryView(View, LoginRequiredMixin):
         end_dates = request.POST.getlist("end_date")
         positions = request.POST.getlist("position")
 
-        print(names)
-        print(positions)
-
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
         try:
             resume = Resume.objects.get(id=request.session["resume_id"])
         except Resume.DoesNotExist:
-            return render(request, self.template_name, context)
+            return render(request, self.template, self.context)
         try:
             for name, start_date, end_date, position in zip(
                 names, start_dates, end_dates, positions
@@ -337,47 +304,38 @@ class AddWorkHistoryView(View, LoginRequiredMixin):
                 )
 
         except Exception:
-            context = {
-                "error_message": "An error occurred. Check the form and try again."
-            }
-            return render(request, self.template_name, context)
+            self.context.update(
+                {"error_message": "An error occurred. Check the form and try again."}
+            )
+            return render(request, self.template, self.context)
         return redirect(self.success_url)
 
 
-class AddResumeSkillView(View, LoginRequiredMixin):
-    template_name = "resume/add-resume-skill.html"
+class AddResumeSkillView(ProtectedView):
+    template = "resume/add-resume-skill.html"
     page = "create-resume"
     title = "Add Resume Skill"
     success_url = "resume:resume-view"
+    context = {"title": title, "page": page}
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
-        return render(request, self.template_name, context)
+        return render(request, self.template, self.context)
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         names = request.POST.getlist("name")
         levels = request.POST.getlist("level")
 
-        context = {
-            "page": self.page,
-            "title": self.title,
-        }
-
         try:
             resume = Resume.objects.get(id=request.session["resume_id"])
         except Resume.DoesNotExist:
-            return render(request, self.template_name, context)
+            return render(request, self.template, self.context)
         try:
             for name, level in zip(names, levels):
                 Skill.objects.create(name=name, level=level, resume=resume)
         except Exception as e:
             print(e)
-            context = {
-                "error_message": "An error occurred. Check the form and try again."
-            }
-            return render(request, self.template_name, context)
+            self.context.update(
+                {"error_message": "An error occurred. Check the form and try again."}
+            )
+            return render(request, self.template, self.context)
         return redirect(self.success_url, id=resume.id)

@@ -30,7 +30,7 @@ body {
     border-bottom-left-radius: 0;
 }
 
-.form-add-resume-skills #floatingURL {
+.form-add-resume-skills #floatingSkillLevel {
     margin-bottom: -1px;
     border-radius: 0;
 }
