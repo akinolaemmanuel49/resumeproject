@@ -15,6 +15,10 @@ from pathlib import Path
 
 import pdfkit
 
+from resumeproject.env_var import Settings as Env
+
+env = Env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,15 +27,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k430&p+wieh0c(+jtf=z=-#%k(ts)gx$cpky9q(ax!-i%a4^pp'
+SECRET_KEY = env.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
 
-LOGIN_URL = "auth:login-view"
-LOGOUT_URL = "auth:logout-view"
+LOGIN_URL = 'auth:login-view'
+LOGOUT_URL = 'auth:logout-view'
 
 
 # Application definition
@@ -94,6 +98,13 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'user.User'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env.EMAIL_HOST
+EMAIL_HOST_USER = env.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = env.EMAIL_HOST_PASSWORD
+EMAIL_PORT = env.EMAIL_PORT
+EMAIL_USE_TLS = env.EMAIL_USE_TLS
+DEFAULT_FROM_EMAIL = env.DEFAULT_FROM_EMAIL
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -135,7 +146,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static',
 ]
 
 WKHTMLTOPDF_CMD = os.path.join(BASE_DIR, 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')

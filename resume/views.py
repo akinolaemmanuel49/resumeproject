@@ -69,7 +69,6 @@ class CreateResumeView(View, LoginRequiredMixin):
                 resume.image = request.FILES["image"]
 
             resume.save()
-            print("RESUME ID: ", resume.id)
             request.session["resume_id"] = resume.id
             return redirect(self.success_url)
         except Exception:

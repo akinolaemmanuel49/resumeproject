@@ -1,7 +1,7 @@
 from random import choice
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.db import models
+from django.db import IntegrityError, models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -29,7 +29,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Token(models.Model):
-    token = models.CharField(_("Token"), blank=False, null=False, max_length=8)
+    token = models.CharField(
+        _("Token"), blank=False, null=False, max_length=8, unique=True
+    )
     token_expires = models.DateTimeField(
         _("Token Expires"), default=timezone.now() + timezone.timedelta(minutes=10)
     )
@@ -43,7 +45,10 @@ class Token(models.Model):
         for __ in range(8):
             token += choice(numbers)
 
-        self.token = token
+        try:
+            self.token = token
+        except IntegrityError:
+            token = self.generate()
 
         return token
 
