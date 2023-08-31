@@ -38,7 +38,7 @@ jobs:
         EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
         DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
       run: |
-        echo ${{ secrets.EMAIL_HOST }} >> .env
+        echo ${{ secrets.EMAIL_HOST }}
 
     - name: Run Tests
       run: |
