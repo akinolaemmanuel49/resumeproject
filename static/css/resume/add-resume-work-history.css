@@ -45,6 +45,11 @@ body {
     border-radius: 0;
 }
 
+.form-add-resume-work-history #floatingJobDescription {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
 .form-add-resume-work-history #deleteWorkHistoryItemButton {
     margin-bottom: 25px;
     border-top-right-radius: 0;

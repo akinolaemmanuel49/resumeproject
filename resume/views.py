@@ -284,14 +284,15 @@ class AddWorkHistoryView(ProtectedView):
         start_dates = request.POST.getlist("start_date")
         end_dates = request.POST.getlist("end_date")
         positions = request.POST.getlist("position")
+        job_descriptions = request.POST.getlist("job_description")
 
         try:
             resume = Resume.objects.get(id=request.session["resume_id"])
         except Resume.DoesNotExist:
             return render(request, self.template, self.context)
         try:
-            for name, start_date, end_date, position in zip(
-                names, start_dates, end_dates, positions
+            for name, start_date, end_date, position, job_description in zip(
+                names, start_dates, end_dates, positions, job_descriptions
             ):
                 if end_date == "":
                     end_date = None
@@ -300,6 +301,7 @@ class AddWorkHistoryView(ProtectedView):
                     start_date=start_date,
                     end_date=end_date,
                     position=position,
+                    job_description=job_description,
                     resume=resume,
                 )
 
@@ -339,3 +341,20 @@ class AddResumeSkillView(ProtectedView):
             )
             return render(request, self.template, self.context)
         return redirect(self.success_url, id=resume.id)
+
+
+class DeleteResumeAction(ProtectedView):
+    success_url = "resume:resumes-view"
+    page = "resumes"
+    title = "Resume"
+    context = {"title": title, "page": page}
+
+    def get(
+        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        try:
+            resume = Resume.objects.get(id=id, user=request.user)
+            resume.delete()
+            return redirect(self.success_url)
+        except Resume.DoesNotExist:
+            return redirect(self.success_url)

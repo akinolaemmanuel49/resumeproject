@@ -76,6 +76,10 @@
             padding-left: 1rem;
         }
 
+        .date-range {
+            width: 235px;
+        }
+
         .tab {
             font-size: 12px;
             color: #777;
@@ -126,7 +130,7 @@
                     <tr class="item">
                         <td colspan="2">
                             <h2 class="section-title">Profile</h2>
-                            <p class="description">{{ resume.description }}</p>
+                            <p class="description">{{ resume.description|linebreaks }}</p>
                         </td>
                     </tr>
                 </table>
@@ -143,7 +147,7 @@
                         <td class="detail">
                             <p class="bold">{{ work_history.name }}</p>
                             <p class="tab">{{ work_history.position }}</p>
-                            <p class="description">{{ work_history.description }}</p>
+                            <p class="description">{{ work_history.job_description|linebreaks }}</p>
                         </td>
                     </tr>
                     {% endfor %}

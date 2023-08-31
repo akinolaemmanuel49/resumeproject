@@ -14,7 +14,7 @@
 
             <h3>Profile</h3>
             <hr>
-            <p class="item-container">{{ resume.description }}</p>
+            <p class="item-container">{{ resume.description|linebreaks }}</p>
             <!-- Display other resume details such as name, email, phone, etc. -->
 
             <h3>Work History</h3>
@@ -28,6 +28,9 @@
                             <div class="row-custom">
                                 <p class="wrap-text-custom">
                                     {{ work_history.position }}
+                                </p>
+                                <p class="wrap-text-custom">
+                                    {{ work_history.job_description|linebreaks }}
                                 </p>
                             </div>
                         </div>
