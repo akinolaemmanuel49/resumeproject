@@ -108,9 +108,6 @@ class ResumesView(ProtectedView):
 
         return render(request, self.template, self.context)
 
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        pass
-
 
 class ResumeView(ProtectedView):
     template = "resume/resume-detail.html"
