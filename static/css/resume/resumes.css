@@ -20,3 +20,26 @@
     font-family: 'Courier New', Courier, monospace;
     text-decoration: none;
 }
+
+/* Add this to your existing CSS stylesheet */
+.resume-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.edit-button,
+.delete-button {
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+    background-color: #0056b3;
+}

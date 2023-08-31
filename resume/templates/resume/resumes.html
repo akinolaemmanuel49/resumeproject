@@ -16,6 +16,9 @@
                     <a class="resume-title" href="{% url 'resume:resume-view' id=resume.id %}">
                         <p>{{ resume.title }}</p>
                     </a>
+                    <div class="resume-actions">
+                        <a href="{% url 'resume:delete-resume-action' id=resume.id %}" class="delete-button">Delete</a>
+                    </div>
                 </li>
                 {% endfor %}
             </ul>

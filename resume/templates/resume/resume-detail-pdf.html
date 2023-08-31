@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -7,183 +7,207 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.115.4">
-
     <title>{{ title }}</title>
-
     <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 0;
+        @page {
+            size: A4;
             margin: 0;
+        }
+
+        body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #fff;
+            margin: 0;
+            padding: 1rem 0;
         }
 
         .container {
-            max-width: 7in;
-            max-height: fit-content;
-            padding: 0 15px;
             margin: 0 auto;
+            max-width: 800px;
+            padding: 0 1rem;
         }
 
         .resume-detail {
-            text-align: left;
-            margin-bottom: 0rem;
-            padding: 5px;
+            background-color: #fff;
+            padding: 1rem;
         }
 
         .owner-name {
             text-align: center;
+            font-size: 20px;
+            margin-bottom: 0.5rem;
         }
-        
+
         .contact-details {
             text-align: center;
-            font-size: smaller;
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 1rem;
         }
-        
-        .item-container {
-            margin-left: 0px;
-        }
-        
-        .bold {
+
+        .section-title {
+            font-size: 16px;
             font-weight: bold;
+            margin-top: 1rem;
         }
-        
-        .flex-container-custom {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
+
+        .description {
+            margin-top: 0.5rem;
+            color: #555;
         }
-        
-        .column-custom {
-            padding: 0px;
+
+        .item-list {
+            width: 100%;
+            border-collapse: collapse;
         }
-        
-        .fit-content-custom {
-            flex: 0 0 auto;
-            max-width: 160px;
+
+        .item {
+            border-bottom: 1px solid #ccc;
+            padding: 1rem 0;
         }
-        
-        .wrap-content-custom {
-            flex: 1;
+
+        .item-list .item:last-child {
+            border-bottom: none;
         }
-        
-        .row-custom {
-            max-width: 300px;
+
+        .date-range,
+        .bold,
+        .tab {
+            padding-left: 1rem;
         }
-        
-        .wrap-text-custom {
-            overflow-wrap: normal;
-            word-wrap: normal;
+
+        .date-range {
+            width: 235px;
+        }
+
+        .tab {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .social-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .download-button {
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 20px auto 0;
+            width: 150px;
+        }
+
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+
+        .detail {
+            text-align: right;
         }
     </style>
-
 </head>
 
 <body>
     <main>
         <div class="container">
             <div class="resume-detail">
-                <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
-                <p class="contact-details">{{resume.phone}} | {{resume.email}}</p>
+                <table class="item-list">
+                    <tr class="item">
+                        <td colspan="2">
+                            <h1 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h1>
+                            <p class="contact-details">{{ resume.phone }} | {{ resume.email }}</p>
+                        </td>
+                    </tr>
+                </table>
 
-                <h3>Profile</h3>
-                <hr>
-                <p class="item-container">{{ resume.description }}</p>
+                <table class="item-list">
+                    <tr class="item">
+                        <td colspan="2">
+                            <h2 class="section-title">Profile</h2>
+                            <p class="description">{{ resume.description|linebreaks }}</p>
+                        </td>
+                    </tr>
+                </table>
 
-                <h3>Work History</h3>
-                <hr>
-                <ul class="item-container">
+                <table class="item-list">
+                    <tr class="item">
+                        <td colspan="2">
+                            <h2 class="section-title">Work History</h2>
+                        </td>
+                    </tr>
                     {% for work_history in resume.workhistory_set.all %}
-                    <li>
-                        <div class="flex-container-custom">
-                            <div class="column-custom wrap-content-custom">
-                                <p class="bold">{{ work_history.name }}</p>
-                                <div class="row-custom">
-                                    <p class="wrap-text-custom">
-                                        {{ work_history.position }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="column-custom fit-content-custom">
-                                <p>{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date != None %} {{ work_history.end_date|date:"M Y" }} {% else %} Current {% endif %}</p>
-                            </div>
-                        </div>
-                    </li>
+                    <tr class="item">
+                        <td class="date-range">{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date != None %} {{ work_history.end_date|date:"M Y" }} {% else %} Current {% endif %}</td>
+                        <td class="detail">
+                            <p class="bold">{{ work_history.name }}</p>
+                            <p class="tab">{{ work_history.position }}</p>
+                            <p class="description">{{ work_history.job_description|linebreaks }}</p>
+                        </td>
+                    </tr>
                     {% endfor %}
-                </ul>
+                </table>
 
-                <h3>Education</h3>
-                <hr>
-                <ul class="item-container">
+                <table class="item-list">
+                    <tr class="item">
+                        <td colspan="2">
+                            <h2 class="section-title">Education</h2>
+                        </td>
+                    </tr>
                     {% for education in resume.education_set.all %}
-                    <li>
-                        <div class="flex-container-custom">
-                            <div class="column-custom wrap-content-custom">
-                                <p class="bold">{{ education.institution }}</p>
-                                <div class="row-custom">
-                                    <p class="wrap-text-custom">
-                                        {{ education.degree }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="column-custom fit-content-custom">
-                                <p>{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</p>
-                            </div>
-                        </div>
-                    </li>
+                    <tr class="item">
+                        <td class="date-range">{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</td>
+                        <td class="detail">
+                            <p class="bold">{{ education.institution }}</p>
+                            <p class="tab">{{ education.degree }}</p>
+                        </td>
+                    </tr>
                     {% endfor %}
-                </ul>
+                </table>
 
-                <h3>Skills</h3>
-                <hr>
-                <ul class="item-container">
+                <table class="item-list">
+                    <tr class="item">
+                        <td colspan="2">
+                            <h2 class="section-title">Skills</h2>
+                        </td>
+                    </tr>
                     {% for skill in resume.skill_set.all %}
-                    <li>{{ skill.name }} - {{ skill.get_level_display }}</li>
+                    <tr class="item">
+                        <td class="bold">{{ skill.name }}</td>
+                        <td  class="detail">
+                            <p class="tab">{{ skill.get_level_display }}</p>
+                        </td>
+                    </tr>
                     {% endfor %}
-                </ul>
+                </table>
 
-                <h3>Social</h3>
-                <hr>
-                <ul class="item-container">
+                <table class="item-list">
+                    <tr class="item">
+                        <td colspan="2">
+                            <h2 class="section-title">Social</h2>
+                        </td>
+                    </tr>
                     {% for social in resume.social_set.all %}
-                    <li>{{ social.name }}: <a href="{{ social.url }}">{{ social.url }}</a></li>
+                    <tr class="item">
+                        <td class="bold"><a href="{{ social.url }}" target="_blank">{{ social.name }}</a></td>
+                        <td></td>
+                    </tr>
                     {% endfor %}
-                </ul>
+                </table>
+
+                {% if is_preview == True %}
+                <div class="social-links">
+                    <a href="{% url 'resume:download-resume-action' id=resume.id %}" target="_blank" class="download-button">Download Resume</a>
+                </div>
+                {% endif %}
             </div>
         </div>
-
-        {% if is_preview == True %}
-        <div class="conditional-button">
-            <a href="{% url 'resume:download-resume-action' id=resume.id %}" class="download-button">Download</a>
-        </div>
-
     </main>
-    <style>
-        .conditional-button {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #007bff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .download-button {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
-    {% endif %}
-    </main>
-    
-
-
 </body>
 
 </html>

@@ -44,6 +44,7 @@ class WorkHistory(models.Model):
     start_date = models.DateField(_("Start Date"))
     end_date = models.DateField(_("End Date"), blank=True, null=True)
     position = models.CharField(_("Position"), max_length=255)
+    job_description = models.TextField(_("Job Description"), blank=True, null=True)
     created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
 
