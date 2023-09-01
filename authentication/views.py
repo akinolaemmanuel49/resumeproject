@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login
 from django.views import View
 from django.utils import timezone
 from django.contrib.auth.password_validation import validate_password
+from django.contrib import messages
 
 from user.models import Profile, Token, User
 from resumeproject.utils import send_recover_password_mail
@@ -120,6 +121,9 @@ class AuthResetPasswordResetView(View):
         "title": title,
     }
 
+    def add_message(self, request: HttpRequest, message: str, level=messages.INFO):
+        messages.add_message(request, level, message)
+
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         return render(request, self.template, self.context)
 
@@ -129,24 +133,28 @@ class AuthResetPasswordResetView(View):
         new_password = request.POST.get("new_password")
         new_password_confirm = request.POST.get("new_password_confirm")
 
-        token = Token.objects.get(id=request.session["token_id"])
-        user = token.user
+        try:
+            token = Token.objects.get(id=request.session["token_id"])
+            user = token.user
 
-        if new_password == new_password_confirm:
-            try:
-                if validate_password(new_password) is None:
-                    user.set_password(new_password)
-                    user.save()
-                    request.session.delete("tokenUser")
-                    return redirect("auth:login-view")
-            except ValidationError as e:
-                self.context.update({"error_message": list(e.messages)})
+            if new_password == new_password_confirm:
+                try:
+                    if validate_password(new_password) is None:
+                        user.set_password(new_password)
+                        user.save()
+                        request.session.delete("tokenUser")
+                        return redirect("auth:login-view")
+                except ValidationError as e:
+                    self.context.update({"error_message": list(e.messages)})
+                    return render(request, self.template, self.context, status=400)
+            else:
+                self.context.update(
+                    {"error_message": ["Invalid input. Passwords do not match"]}
+                )
                 return render(request, self.template, self.context, status=400)
-        else:
-            self.context.update(
-                {"error_message": ["Invalid input. Passwords do not match"]}
-            )
-            return render(request, self.template, self.context)
+        except Exception:
+            self.add_message(request, "Illegal request Detected.", messages.ERROR)
+            return redirect("home-view")
 
 
 class AuthLogoutView(LogoutView):
