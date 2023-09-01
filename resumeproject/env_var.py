@@ -13,4 +13,4 @@ class Settings(BaseSettings):
     EMAIL_USE_TLS: bool
     DEFAULT_FROM_EMAIL: EmailStr
 
-    model_config = SettingsConfigDict(env_file=ENV_FILE)
+    # model_config = SettingsConfigDict(env_file=ENV_FILE)
