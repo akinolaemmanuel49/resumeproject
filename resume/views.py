@@ -103,17 +103,14 @@ class AddResumeSocialsView(ProtectedView):
         urls = request.POST.getlist("url")
 
         try:
-            resume = Resume.objects.get(id=request.session["resume_id"])
+            if request.session["resume_id"]:
+                resume = Resume.objects.get(id=request.session["resume_id"])
+            else:
+                return redirect("resume:create-resume-view")
         except Resume.DoesNotExist:
-            return render(request, self.template, self.context)
-        try:
-            for name, url in zip(names, urls):
-                Social.objects.create(name=name, url=url, resume=resume)
-        except Exception:
-            self.context.update(
-                {"error_message": "An error occurred. Check the form and try again."}
-            )
-            return render(request, self.template, self.context)
+            return redirect("resume:create-resume-view")
+        for name, url in zip(names, urls):
+            Social.objects.create(name=name, url=url, resume=resume)
         return redirect(self.success_url)
 
 
@@ -134,26 +131,22 @@ class AddEducationView(ProtectedView):
         degrees = request.POST.getlist("degree")
 
         try:
-            resume = Resume.objects.get(id=request.session["resume_id"])
+            if request.session["resume_id"]:
+                resume = Resume.objects.get(id=request.session["resume_id"])
+            else:
+                return redirect("resume:create-resume-view")
         except Resume.DoesNotExist:
-            return render(request, self.template, self.context)
-        try:
-            for institution, start_date, end_date, degree in zip(
-                institutions, start_dates, end_dates, degrees
-            ):
-                Education.objects.create(
-                    institution=institution,
-                    start_date=start_date,
-                    end_date=end_date,
-                    degree=degree,
-                    resume=resume,
-                )
-
-        except Exception:
-            self.context.update(
-                {"error_message": "An error occurred. Check the form and try again."}
+            return redirect("resume:create-resume-view")
+        for institution, start_date, end_date, degree in zip(
+            institutions, start_dates, end_dates, degrees
+        ):
+            Education.objects.create(
+                institution=institution,
+                start_date=start_date,
+                end_date=end_date,
+                degree=degree,
+                resume=resume,
             )
-            return render(request, self.template, self.context)
         return redirect(self.success_url)
 
 
@@ -175,29 +168,26 @@ class AddWorkHistoryView(ProtectedView):
         job_descriptions = request.POST.getlist("job_description")
 
         try:
-            resume = Resume.objects.get(id=request.session["resume_id"])
+            if request.session["resume_id"]:
+                resume = Resume.objects.get(id=request.session["resume_id"])
+            else:
+                return redirect("resume:create-resume-view")
         except Resume.DoesNotExist:
-            return render(request, self.template, self.context)
-        try:
-            for name, start_date, end_date, position, job_description in zip(
-                names, start_dates, end_dates, positions, job_descriptions
-            ):
-                if end_date == "":
-                    end_date = None
-                WorkHistory.objects.create(
-                    name=name,
-                    start_date=start_date,
-                    end_date=end_date,
-                    position=position,
-                    job_description=job_description,
-                    resume=resume,
-                )
+            return redirect("resume:create-resume-view")
 
-        except Exception:
-            self.context.update(
-                {"error_message": "An error occurred. Check the form and try again."}
+        for name, start_date, end_date, position, job_description in zip(
+            names, start_dates, end_dates, positions, job_descriptions
+        ):
+            if end_date == "":
+                end_date = None
+            WorkHistory.objects.create(
+                name=name,
+                start_date=start_date,
+                end_date=end_date,
+                position=position,
+                job_description=job_description,
+                resume=resume,
             )
-            return render(request, self.template, self.context)
         return redirect(self.success_url)
 
 
@@ -216,18 +206,15 @@ class AddResumeSkillView(ProtectedView):
         levels = request.POST.getlist("level")
 
         try:
-            resume = Resume.objects.get(id=request.session["resume_id"])
+            if request.session["resume_id"]:
+                resume = Resume.objects.get(id=request.session["resume_id"])
+            else:
+                return redirect("resume:create-resume-view")
         except Resume.DoesNotExist:
-            return render(request, self.template, self.context)
-        try:
-            for name, level in zip(names, levels):
-                Skill.objects.create(name=name, level=level, resume=resume)
-        except Exception as e:
-            print(e)
-            self.context.update(
-                {"error_message": "An error occurred. Check the form and try again."}
-            )
-            return render(request, self.template, self.context)
+            return redirect("resume:create-resume-view")
+        
+        for name, level in zip(names, levels):
+            Skill.objects.create(name=name, level=level, resume=resume)
         return redirect(self.success_url, id=resume.id)
 
 
