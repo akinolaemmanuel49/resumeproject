@@ -4,6 +4,8 @@ import pdfkit
 from django.http import HttpRequest
 from django.shortcuts import redirect, render, HttpResponse
 from django.template.loader import render_to_string
+from django.db import DatabaseError, IntegrityError
+from django.db.transaction import TransactionManagementError
 
 from resumeproject.settings import PDFKIT_CONFIG
 from user.models import Profile
@@ -71,7 +73,7 @@ class CreateResumeView(ProtectedView):
             resume.save()
             request.session["resume_id"] = resume.id
             return redirect(self.success_url)
-        except Exception:
+        except (Exception, DatabaseError, IntegrityError, TransactionManagementError):
             try:
                 user_profile = Profile.objects.get(user=request.user)
                 self.context.update(
@@ -81,120 +83,9 @@ class CreateResumeView(ProtectedView):
                             Check the form and try again.",
                     }
                 )
-                return render(request, self.template, self.context)
+                return render(request, self.template, self.context, status=400)
             except Profile.DoesNotExist:
-                return render(request, self.template, self.context)
-
-
-class ResumesView(ProtectedView):
-    template = "resume/resumes.html"
-    page = "resumes"
-    title = "Resumes"
-    context = {"title": title, "page": page}
-
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        try:
-            user_resumes = (
-                Resume.objects.filter(user=request.user).all().order_by("-created_at")
-            )
-        except Resume.DoesNotExist:
-            return render(request, self.template, self.context)
-
-        self.context.update(
-            {
-                "user_resumes": user_resumes,
-            }
-        )
-
-        return render(request, self.template, self.context)
-
-
-class ResumeView(ProtectedView):
-    template = "resume/resume-detail.html"
-    page = "resumes"
-    title = "Resume"
-    context = {"title": title, "page": page}
-
-    def get(
-        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
-    ) -> HttpResponse:
-        try:
-            resume = Resume.objects.get(id=id)
-            self.context.update({"resume": resume, "is_preview": True})
-            return render(request, self.template, self.context)
-        except Resume.DoesNotExist:
-            return redirect("resume:create-resume-view")
-
-
-class ResumePDFView(ProtectedView):
-    template = "resume/resume-detail-pdf.html"
-    page = "resumes"
-    title = "Resume"
-    context = {"title": title, "page": page}
-
-    def get(
-        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
-    ) -> HttpResponse:
-        try:
-            resume = Resume.objects.get(id=id)
-            self.context.update(
-                {
-                    "resume": resume,
-                    "is_preview": True,
-                }
-            )
-            return render(request, self.template, self.context)
-        except Resume.DoesNotExist:
-            return redirect("resume:create-resume-view")
-
-
-class DownloadResumeAction(ProtectedView):
-    template = "resume/resume-detail-pdf.html"
-    page = "resumes"
-    title = "Resume"
-    context = {"title": title, "page": page}
-
-    def get(
-        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
-    ) -> HttpResponse:
-        options = {
-            "page-size": "letter",
-            "margin-top": "0.00001in",
-            "margin-right": "0.00001in",
-            "margin-bottom": "0.00001in",
-            "margin-left": "0.00001in",
-            "encoding": "UTF-8",
-            "custom-header": [("Accept-Encoding", "gzip")],
-            "cookie": [
-                ("sessionid", request.COOKIES["sessionid"]),
-                ("csrftoken", request.COOKIES["csrftoken"]),
-            ],
-            "no-outline": None,
-        }
-        try:
-            resume = Resume.objects.get(id=id)
-            self.context.update(
-                {
-                    "resume": resume,
-                    "is_preview": False,
-                }
-            )
-            html = render_to_string(self.template, self.context)
-
-            pdf = pdfkit.from_string(
-                html, False, configuration=PDFKIT_CONFIG, options=options
-            )
-
-            response = HttpResponse(pdf, content_type="application/pdf")
-            response[
-                "Content-Disposition"
-            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s \
-                Resume.pdf"
-            return response
-        except Resume.DoesNotExist:
-            return HttpResponse(
-                {"Error": "An error occurred"}, content_type="application/json"
-            )
+                return render(request, self.template, self.context, status=400)
 
 
 class AddResumeSocialsView(ProtectedView):
@@ -338,6 +229,117 @@ class AddResumeSkillView(ProtectedView):
             )
             return render(request, self.template, self.context)
         return redirect(self.success_url, id=resume.id)
+
+
+class ResumesView(ProtectedView):
+    template = "resume/resumes.html"
+    page = "resumes"
+    title = "Resumes"
+    context = {"title": title, "page": page}
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        try:
+            user_resumes = (
+                Resume.objects.filter(user=request.user).all().order_by("-created_at")
+            )
+        except Resume.DoesNotExist:
+            return render(request, self.template, self.context)
+
+        self.context.update(
+            {
+                "user_resumes": user_resumes,
+            }
+        )
+
+        return render(request, self.template, self.context)
+
+
+class ResumeView(ProtectedView):
+    template = "resume/resume-detail.html"
+    page = "resumes"
+    title = "Resume"
+    context = {"title": title, "page": page}
+
+    def get(
+        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        try:
+            resume = Resume.objects.get(id=id)
+            self.context.update({"resume": resume, "is_preview": True})
+            return render(request, self.template, self.context)
+        except Resume.DoesNotExist:
+            return redirect("resume:create-resume-view")
+
+
+class ResumePDFView(ProtectedView):
+    template = "resume/resume-detail-pdf.html"
+    page = "resumes"
+    title = "Resume"
+    context = {"title": title, "page": page}
+
+    def get(
+        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        try:
+            resume = Resume.objects.get(id=id)
+            self.context.update(
+                {
+                    "resume": resume,
+                    "is_preview": True,
+                }
+            )
+            return render(request, self.template, self.context)
+        except Resume.DoesNotExist:
+            return redirect("resume:create-resume-view")
+
+
+class DownloadResumeAction(ProtectedView):
+    template = "resume/resume-detail-pdf.html"
+    page = "resumes"
+    title = "Resume"
+    context = {"title": title, "page": page}
+
+    def get(
+        self, request: HttpRequest, id: int, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        options = {
+            "page-size": "letter",
+            "margin-top": "0.00001in",
+            "margin-right": "0.00001in",
+            "margin-bottom": "0.00001in",
+            "margin-left": "0.00001in",
+            "encoding": "UTF-8",
+            "custom-header": [("Accept-Encoding", "gzip")],
+            "cookie": [
+                ("sessionid", request.COOKIES["sessionid"]),
+                ("csrftoken", request.COOKIES["csrftoken"]),
+            ],
+            "no-outline": None,
+        }
+        try:
+            resume = Resume.objects.get(id=id)
+            self.context.update(
+                {
+                    "resume": resume,
+                    "is_preview": False,
+                }
+            )
+            html = render_to_string(self.template, self.context)
+
+            pdf = pdfkit.from_string(
+                html, False, configuration=PDFKIT_CONFIG, options=options
+            )
+
+            response = HttpResponse(pdf, content_type="application/pdf")
+            response[
+                "Content-Disposition"
+            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s \
+                Resume.pdf"
+            return response
+        except Resume.DoesNotExist:
+            return HttpResponse(
+                {"Error": "An error occurred"}, content_type="application/json"
+            )
 
 
 class DeleteResumeAction(ProtectedView):
