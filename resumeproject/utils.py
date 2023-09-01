@@ -49,12 +49,15 @@ def send_recover_password_mail(
     email: EmailStr,
     template: str,
     token: str,
+    request: HttpRequest,
     subject: str = "Password Reset Request",
     message: str = "Please check your email for instructions on resetting your password.",
     from_email: EmailStr | None = None,
     user_profile: Profile | None = None,
 ) -> None:
-    password_token_reset_link = reverse("auth:password-reset-set-token")
+    password_token_reset_link = request.build_absolute_uri(
+        reverse("auth:password-reset-set-token")
+    )
 
     html_message = render_to_string(
         template,

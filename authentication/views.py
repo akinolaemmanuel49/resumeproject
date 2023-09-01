@@ -72,6 +72,7 @@ class AuthResetPasswordGetEmailView(View):
                     email=email,
                     template="password_reset_email.html",
                     token=token.token,
+                    request=request,
                     user_profile=user_profile,
                 )
                 return redirect("auth:password-reset-set-token")
@@ -80,6 +81,7 @@ class AuthResetPasswordGetEmailView(View):
                     email=email,
                     template="password_reset_email.html",
                     token=token.token,
+                    request=request,
                 )
                 return redirect("auth:password-reset-set-token")
         except User.DoesNotExist:

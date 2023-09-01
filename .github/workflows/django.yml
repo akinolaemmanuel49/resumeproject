@@ -30,15 +30,18 @@ jobs:
 
     - name: Set secrets
       env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+        # SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        SECRET_KEY: ${{ env.SECRET_KEY }}
+        # EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+        EMAIL_HOST: ${{ env.EMAIL_HOST }}
         EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
         EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
         EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
         EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
         DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
       run: |
-        
+        echo $SECRET_KEY
+        echo $EMAIL_HOST
 
     - name: Run Tests
       run: |

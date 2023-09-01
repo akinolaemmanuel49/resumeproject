@@ -1,7 +1,7 @@
 from pydantic import EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-ENV_FILE = ".env.example"
+ENV_FILE = ".env"
 
 
 class Settings(BaseSettings):
