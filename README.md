@@ -58,13 +58,24 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-6. Run the development server:
+6. Add the .env file and place it in the root directory, you can use the .env.example file for guidance and rename the value of ENV_FILE in env_var.py or set the environment variables:
+```bash
+SECRET_KEY="secret-key"
+EMAIL_HOST="smtp.provider.com"
+EMAIL_HOST_USER="example.mail.com"
+EMAIL_HOST_PASSWORD="password"
+EMAIL_PORT= 587
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL="resumebuilder@resumebuilder.com"
+```
+
+7. Run the development server:
 
 ```bash
 python manage.py runserver
 ```
 
-7. Open a web browser and navigate to `http://127.0.0.1:8000` to access the app.
+8. Open a web browser and navigate to `http://127.0.0.1:8000` to access the app.
 
 ## Running Tests
 

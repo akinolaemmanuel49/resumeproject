@@ -24,6 +24,7 @@
 </div>
 
 <p>Don't have an account? <a href="{% url 'user:create-user-view' %}">Register</a></p>
+<p>Forgot your password? <a href="{% url 'auth:password-reset-get-email' %}">Recover password</a></p>
 <p>{{ error_message }}</p>
 
 <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
