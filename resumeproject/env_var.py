@@ -1,16 +1,14 @@
-from pydantic import EmailStr
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-ENV_FILE = ".env"
+import os
 
 
-class Settings(BaseSettings):
-    SECRET_KEY: str
-    EMAIL_HOST: str
-    EMAIL_HOST_USER: EmailStr
-    EMAIL_HOST_PASSWORD: str
-    EMAIL_PORT: int
-    EMAIL_USE_TLS: bool
-    DEFAULT_FROM_EMAIL: EmailStr
+class Settings:
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    EMAIL_HOST = os.environ.get("EMAIL_HOST")
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+    EMAIL_PORT = os.environ.get("EMAIL_PORT")
+    EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
-    # model_config = SettingsConfigDict(env_file=ENV_FILE)
+
+settings = Settings()
