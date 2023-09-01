@@ -58,7 +58,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-6. Add the .env file and place it in the root directory, you can use the .env.example file for guidance and rename the value of ENV_FILE in env_var.py or set the environment variables:
+6. Add the .env file and place it in the root directory, you can use the .env.example file for guidance or set the environment variables:
 ```bash
 SECRET_KEY="secret-key"
 EMAIL_HOST="smtp.provider.com"
