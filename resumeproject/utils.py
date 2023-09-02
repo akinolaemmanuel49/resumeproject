@@ -31,7 +31,11 @@ class ProtectedView(LoginRequiredMixin, View):
         self.add_message(
             self.request, "You are not logged in. Please login.", messages.ERROR
         )
-        return redirect(reverse("auth:login-view") + f"?next={reverse(self.next_page)}")
+        if self.next_page:
+            return redirect(
+                reverse("auth:login-view") + f"?next={reverse(self.next_page)}"
+            )
+        return redirect(reverse("auth:login-view"))
 
 
 def email_error_message_handler(error_message: str) -> list[str]:
