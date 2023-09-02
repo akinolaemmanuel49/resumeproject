@@ -85,6 +85,35 @@ This repository includes test cases to ensure the functionality of the app. To r
 python manage.py test
 ```
 
+## Installing wkhtmltopdf
+
+To install `wkhtmltopdf`, you can follow the instructions for your specific operating system. `wkhtmltopdf` is a command-line tool that converts HTML and CSS into PDF files. Here's how you can install it on various operating systems:
+
+### Linux (Ubuntu/Debian):
+
+You can install `wkhtmltopdf` on Ubuntu/Debian using the following commands:
+
+```bash
+sudo apt-get update
+sudo apt-get install wkhtmltopdf
+```
+
+### Windows:
+
+To install `wkhtmltopdf` on Windows, you can download the precompiled binary from the official website: https://wkhtmltopdf.org/downloads.html
+
+Choose the appropriate installer for your system (32-bit or 64-bit), download it, and run the installer to install `wkhtmltopdf` on your Windows machine.
+
+After installation, you should be able to use `wkhtmltopdf` from the command line to convert HTML to PDF.
+
+To test if `wkhtmltopdf` is installed correctly, open your terminal or command prompt and run:
+
+```bash
+wkhtmltopdf --version
+```
+
+This command should display the version information if `wkhtmltopdf` is installed successfully.
+
 This command will execute the test suite and provide you with information about the tests' success.
 
 Feel free to explore the app's features, create resumes, and generate PDFs of your resumes!
