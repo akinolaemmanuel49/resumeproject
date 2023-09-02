@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from resume.models import Resume
+from resume.models import Education, Resume, Skill, Social, WorkHistory
 
 from user.models import User
 
@@ -362,7 +362,74 @@ class AddResumeSkillViewTestCase(TestCase):
 
 
 class ResumesViewTestCase(TestCase):
-    pass
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+
+    def test_resumes_view_get_user_resumes_present(self):
+        # Create two resumes using your template
+        for i in range(1, 3):
+            self.resume = Resume.objects.create(
+                title=f"Resume {i}",
+                description=f"This is the description for Resume {i}.",
+                first_name="Jane",
+                last_name="Doe",
+                email=f"janedoe{i}@mail.com",
+                phone=f"00011100{i}",
+                user=self.user,
+            )
+
+            # Create associated objects for each resume
+            Social.objects.create(
+                name="LinkedIn",
+                url=f"https://www.linkedin.com/janedoe{i}",
+                resume=self.resume,
+            )
+
+            Education.objects.create(
+                institution=f"Institution {i}",
+                start_date="2005-02-02",
+                end_date="2010-02-02",
+                degree=f"B.Sc. Computer Science {i}",
+                resume=self.resume,
+            )
+
+            WorkHistory.objects.create(
+                name=f"Company {i}",
+                start_date="2010-05-05",
+                end_date="2015-05-05",
+                position=f"Position {i}",
+                job_description=f"I worked on projects {i}.\nI did this and that.",
+                resume=self.resume,
+            )
+
+            Skill.objects.create(
+                name=f"Skill {i}", level="intermediate", resume=self.resume
+            )
+
+        response = self.client.get(reverse("resume:resumes-view"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("user_resumes", response.context)
+        self.assertContains(response, "Resume 1")
+        self.assertContains(response, "Resume 2")
+
+    def test_resumes_view_get_user_resumes_absent(self):
+        response = self.client.get(reverse("resume:resumes-view"))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Resume 1")
+        self.assertNotContains(response, "Resume 2")
+
+    def test_resumes_view_get_not_authorized(self):
+        self.client.logout()
+        response = self.client.get(reverse("resume:resumes-view"))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("auth:login-view"))
+
+    def tearDown(self):
+        self.user.delete()
 
 
 class ResumeViewTestCase(TestCase):
