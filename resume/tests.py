@@ -194,7 +194,84 @@ class AddEducationViewTestCase(TestCase):
 
 
 class AddWorkHistoryViewTestCase(TestCase):
-    pass
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+        self.client.post(
+            reverse("user:edit-profile-view"),
+            {
+                "first_name": "Jane",
+                "last_name": "Doe",
+                "email": "janedoe@mail.com",
+                "phone": "000111000",
+                "user": self.user,
+            },
+        )
+        self.resume = Resume.objects.create(
+            title="Python Developer",
+            description="I am a python developer with over 3 years of experience. \nI have worked with professionals on projects that impacted the lives of people.",
+            first_name="Jane",
+            last_name="Doe",
+            email="janedoe@mail.com",
+            phone="000111000",
+            user=self.user,
+        )
+
+    def test_add_resume_work_history_view_get(self):
+        response = self.client.get(reverse("resume:add-resume-work-history"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "resume/add-resume-work-history.html")
+
+    def test_add_resume_work_history_view_post_success(self):
+        session = self.client.session
+        session["resume_id"] = self.resume.id
+        session.save()
+        data = {
+            "institution": ["Stanford University", "Cambridge University"],
+            "start_date": ["2005-02-02", "2010-09-09"],
+            "end_date": ["2010-02-02", "2012-09-09"],
+            "degree": ["B.Sc. Computer Engineering", "M.Sc. Control Systems"],
+        }
+        response = self.client.post(
+            reverse("resume:add-resume-work-history"), data=data
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("resume:add-resume-skills"))
+
+    def test_add_resume_work_history_view_post_resume_not_found(self):
+        session = self.client.session
+        session["resume_id"] = self.resume.id
+        session.save()
+        self.resume.delete()
+
+        data = {
+            "organization_name": ["Catalina Systems", "Catalina Systems"],
+            "start_date": ["2010-05-05", "2015-05-05"],
+            "end_date": [
+                "2015-05-05",
+            ],
+            "position": ["Backend Software Developer", "Systems Engineer"],
+            "job_description": [
+                "I was responsible for designing and documenting APIs.\nI handled the implementation of business logic for front-end client applications."
+                "I was responsible for designing system architecture.\nI managed the implementation and testing of hardware systems ensuring they met product specifications and adhered to industry standards."
+            ],
+        }
+        response = self.client.post(
+            reverse("resume:add-resume-work-history"), data=data
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("resume:create-resume-view"))
+
+    def tearDown(self):
+        try:
+            if self.resume.id is not None:
+                self.resume.delete()
+        except Resume.DoesNotExist:
+            pass
+        self.user.delete()
 
 
 class AddResumeSkillViewTestCase(TestCase):
