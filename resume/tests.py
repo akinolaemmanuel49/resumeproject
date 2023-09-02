@@ -505,7 +505,78 @@ class ResumeViewTestCase(TestCase):
 
 
 class ResumePDFViewTestCase(TestCase):
-    pass
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+        self.client.post(
+            reverse("user:edit-profile-view"),
+            {
+                "first_name": "Jane",
+                "last_name": "Doe",
+                "email": "janedoe@mail.com",
+                "phone": "000111000",
+                "user": self.user,
+            },
+        )
+
+    def test_resume_pdf_view_get_resume_present(self):
+        resume = Resume.objects.create(
+            title="Resume 1",
+            description="This is the description for Resume 1.",
+            first_name="Jane",
+            last_name="Doe",
+            email="janedoe@mail.com",
+            phone="00011100",
+            user=self.user,
+        )
+
+        # Create associated objects for each resume
+        Social.objects.create(
+            name="LinkedIn",
+            url="https://www.linkedin.com/janedoe",
+            resume=resume,
+        )
+
+        Education.objects.create(
+            institution="Institution ",
+            start_date="2005-02-02",
+            end_date="2010-02-02",
+            degree="B.Sc. Computer Science",
+            resume=resume,
+        )
+
+        WorkHistory.objects.create(
+            name="Company 1",
+            start_date="2010-05-05",
+            end_date="2015-05-05",
+            position="Position 1",
+            job_description="I worked on projects 1.\nI did this and that.",
+            resume=resume,
+        )
+
+        Skill.objects.create(name="Skill ", level="intermediate", resume=resume)
+
+        response = self.client.get(
+            reverse("resume:preview-pdf-resume-view", kwargs={"id": resume.id})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "resume/resume-detail-pdf.html")
+        self.assertIn("resume", response.context)
+        self.assertIn("is_preview", response.context)
+        self.assertContains(response, "Resume 1")
+
+    def test_resume_pdf_view_get_resume_absent(self):
+        response = self.client.get(
+            reverse("resume:preview-pdf-resume-view", kwargs={"id": 1})
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("resume:create-resume-view"))
+
+    def tearDown(self):
+        self.user.delete()
 
 
 class DownloadResumeActionTestCase(TestCase):
