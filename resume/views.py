@@ -212,7 +212,7 @@ class AddResumeSkillView(ProtectedView):
                 return redirect("resume:create-resume-view")
         except Resume.DoesNotExist:
             return redirect("resume:create-resume-view")
-        
+
         for name, level in zip(names, levels):
             Skill.objects.create(name=name, level=level, resume=resume)
         return redirect(self.success_url, id=resume.id)
@@ -297,10 +297,6 @@ class DownloadResumeAction(ProtectedView):
             "margin-left": "0.00001in",
             "encoding": "UTF-8",
             "custom-header": [("Accept-Encoding", "gzip")],
-            "cookie": [
-                ("sessionid", request.COOKIES["sessionid"]),
-                ("csrftoken", request.COOKIES["csrftoken"]),
-            ],
             "no-outline": None,
         }
         try:
@@ -320,12 +316,13 @@ class DownloadResumeAction(ProtectedView):
             response = HttpResponse(pdf, content_type="application/pdf")
             response[
                 "Content-Disposition"
-            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s \
-                Resume.pdf"
+            ] = f"attachment; filename={resume.first_name} {resume.last_name}'s Resume.pdf"
             return response
         except Resume.DoesNotExist:
             return HttpResponse(
-                {"Error": "An error occurred"}, content_type="application/json"
+                {"Error": "Resume not found."},
+                content_type="application/json",
+                status=404,
             )
 
 
