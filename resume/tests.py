@@ -281,7 +281,84 @@ class AddWorkHistoryViewTestCase(TestCase):
 
 
 class AddResumeSkillViewTestCase(TestCase):
-    pass
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="janedoe@mail.com", password="testpassword123"
+        )
+        self.client.login(email="janedoe@mail.com", password="testpassword123")
+        self.client.post(
+            reverse("user:edit-profile-view"),
+            {
+                "first_name": "Jane",
+                "last_name": "Doe",
+                "email": "janedoe@mail.com",
+                "phone": "000111000",
+                "user": self.user,
+            },
+        )
+        self.resume = Resume.objects.create(
+            title="Python Developer",
+            description="I am a python developer with over 3 years of experience. \nI have worked with professionals on projects that impacted the lives of people.",
+            first_name="Jane",
+            last_name="Doe",
+            email="janedoe@mail.com",
+            phone="000111000",
+            user=self.user,
+        )
+
+    def test_add_resume_skill_view_get(self):
+        response = self.client.get(reverse("resume:add-resume-skills"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "resume/add-resume-skill.html")
+
+    def test_add_resume_skill_view_post_success(self):
+        session = self.client.session
+        session["resume_id"] = self.resume.id
+        session.save()
+        data = {
+            "name": ["Python", "C++", "C", "Hardware Design", "Project Management"],
+            "level": [
+                "intermediate",
+                "intermediate",
+                "intermediate",
+                "intermediate",
+                "intermediate",
+            ],
+        }
+        response = self.client.post(reverse("resume:add-resume-skills"), data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, reverse("resume:resume-view", kwargs={"id": self.resume.id})
+        )
+
+    def test_add_resume_skill_view_post_resume_not_found(self):
+        session = self.client.session
+        session["resume_id"] = self.resume.id
+        session.save()
+        self.resume.delete()
+
+        data = {
+            "name": ["Python", "C++", "C", "Hardware Design", "Project Management"],
+            "level": [
+                "intermediate",
+                "intermediate",
+                "intermediate",
+                "intermediate",
+                "intermediate",
+            ],
+        }
+        response = self.client.post(reverse("resume:add-resume-skills"), data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("resume:create-resume-view"))
+
+    def tearDown(self):
+        try:
+            if self.resume.id is not None:
+                self.resume.delete()
+        except Resume.DoesNotExist:
+            pass
+        self.user.delete()
 
 
 class ResumesViewTestCase(TestCase):
