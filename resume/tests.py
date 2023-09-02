@@ -230,10 +230,16 @@ class AddWorkHistoryViewTestCase(TestCase):
         session["resume_id"] = self.resume.id
         session.save()
         data = {
-            "institution": ["Stanford University", "Cambridge University"],
-            "start_date": ["2005-02-02", "2010-09-09"],
-            "end_date": ["2010-02-02", "2012-09-09"],
-            "degree": ["B.Sc. Computer Engineering", "M.Sc. Control Systems"],
+            "organization_name": ["Catalina Systems", "Catalina Systems"],
+            "start_date": ["2010-05-05", "2015-05-05"],
+            "end_date": [
+                "2015-05-05",
+            ],
+            "position": ["Backend Software Developer", "Systems Engineer"],
+            "job_description": [
+                "I was responsible for designing and documenting APIs.\nI handled the implementation of business logic for front-end client applications."
+                "I was responsible for designing system architecture.\nI managed the implementation and testing of hardware systems ensuring they met product specifications and adhered to industry standards."
+            ],
         }
         response = self.client.post(
             reverse("resume:add-resume-work-history"), data=data
