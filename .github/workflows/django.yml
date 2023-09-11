@@ -37,6 +37,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Tests
+    - name: Run Tests and Collect Coverage
       run: |
-        python manage.py test
+        coverage run --source='.' manage.py test resume user authentication
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
