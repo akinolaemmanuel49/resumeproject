@@ -1,5 +1,9 @@
 # ResumeProject
 
+[![codecov](https://codecov.io/gh/akinolaemmanuel49/resumeproject/graph/badge.svg?token=UUIUIOOP3C)](https://codecov.io/gh/akinolaemmanuel49/resumeproject)
+![Test](https://github.com/akinolaemmanuel49/resumeproject/actions/workflows/django.yml/badge.svg?event=push)
+
+
 Welcome to the **ResumeProject** GitHub repository! This project is designed to help users create and manage their resumes online. It utilizes Django as the backend framework and Bootstrap 5 for the user interface. The app provides features such as user authentication, resume creation forms, and the ability to convert resumes to PDF format using wkhtmltopdf.
 
 ## Features
