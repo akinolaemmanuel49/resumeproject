@@ -2,11 +2,13 @@
 {% load static %}
 
 {% block customStyle %}
-<link href="{% static 'css/resume/add-resume-socials.css' %}" rel="stylesheet">
+<link href="https://res.cloudinary.com/dikkedkzf/raw/upload/v1695308798/assets/css/resume/add-resume-socials_kuvkfu.css"
+    rel="stylesheet">
 {% endblock %}
 
 {% block form %}
-<form method="post" action="{% url 'resume:add-resume-socials' %}" class="form-add-resume-socials" enctype="multipart/form-data">
+<form method="post" action="{% url 'resume:add-resume-socials' %}" class="form-add-resume-socials"
+    enctype="multipart/form-data">
     {% block formContent %}
     {% csrf_token %}
     <h1 class="h3 mb-3 fw-normal">Add Resume Socials</h1>
@@ -39,5 +41,6 @@
     {% endblock %}
 </form>
 
-<script src="{% static 'js/resume/add-resume-socials.js' %}"></script>
+<script
+    src="https://res.cloudinary.com/dikkedkzf/raw/upload/v1695308810/assets/js/resume/add-resume-socials_qyivvg.js"></script>
 {% endblock %}

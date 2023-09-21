@@ -123,7 +123,9 @@ class UserEditProfileView(ProtectedView):
 
         # Handle image data.
         if "image" in request.FILES:
-            image = request.FILES["image"]
+            image = request.FILES["image"]   
+            import cloudinary.uploader
+            cloudinary.uploader.upload(image, public_id=email)
         else:
             image = None
 
@@ -138,6 +140,7 @@ class UserEditProfileView(ProtectedView):
             user_profile.image = image
         # Handle Profile not found exception.
         except Profile.DoesNotExist:
+            import cloudinary.api
             # Create a new profile instance if one does not exist.
             user_profile = Profile.objects.create(
                 first_name=first_name,
@@ -145,7 +148,7 @@ class UserEditProfileView(ProtectedView):
                 email=email,
                 phone=phone,
                 user=request.user,
-                image=image,
+                image=cloudinary.api.resource(email),
             )
         # Save the profile instance to the database.
         user_profile.save()

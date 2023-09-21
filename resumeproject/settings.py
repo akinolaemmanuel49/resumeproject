@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 import pdfkit
+import cloudinary
 
 from resumeproject.env_var import Settings as Env
 
@@ -107,6 +108,13 @@ EMAIL_PORT = env.EMAIL_PORT
 EMAIL_USE_TLS = env.EMAIL_USE_TLS
 DEFAULT_FROM_EMAIL = env.DEFAULT_FROM_EMAIL
 
+# Cloudinary config
+cloudinary.config(
+    cloud_name = env.CLOUDINARY_ID, 
+    api_key = env.CLOUDINARY_API_KEY, 
+    api_secret = env.CLOUDINARY_API_SECRET
+    )
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -145,11 +153,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'assets',
 ]
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 WKHTMLTOPDF_CMD = os.path.join(BASE_DIR, 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')

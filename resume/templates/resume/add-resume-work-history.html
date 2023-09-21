@@ -2,11 +2,14 @@
 {% load static %}
 
 {% block customStyle %}
-<link href="{% static 'css/resume/add-resume-work-history.css' %}" rel="stylesheet">
+<link
+    href="https://res.cloudinary.com/dikkedkzf/raw/upload/v1695308799/assets/css/resume/add-resume-work-history_mveqdu.css"
+    rel="stylesheet">
 {% endblock %}
 
 {% block form %}
-<form method="post" action="{% url 'resume:add-resume-work-history' %}" class="form-add-resume-work-history" enctype="multipart/form-data">
+<form method="post" action="{% url 'resume:add-resume-work-history' %}" class="form-add-resume-work-history"
+    enctype="multipart/form-data">
     {% block formContent %}
     {% csrf_token %}
     <h1 class="h3 mb-3 fw-normal">Add Resume Work History</h1>
@@ -33,11 +36,12 @@
                 <label for="floatingPosition">Position</label>
             </div>
             <div class="form-floating">
-                <textarea type="" class="form-control" id="floatingJobDescription" placeholder="Job Description" name="job_description"
-                    aria-required="false"></textarea>
+                <textarea type="" class="form-control" id="floatingJobDescription" placeholder="Job Description"
+                    name="job_description" aria-required="false"></textarea>
                 <label for="floatingJobDescription">Job Description</label>
             </div>
-            <button class="btn btn-danger delete-work-history-button" id="deleteWorkHistoryItemButton" type="button">Delete
+            <button class="btn btn-danger delete-work-history-button" id="deleteWorkHistoryItemButton"
+                type="button">Delete
                 #<span class="work-history-item-number">1</span></button>
         </div>
     </div>
@@ -52,5 +56,6 @@
     {% endblock %}
 </form>
 
-<script src="{% static 'js/resume/add-resume-work-history.js' %}"></script>
+<script
+    src="https://res.cloudinary.com/dikkedkzf/raw/upload/v1695308811/assets/js/resume/add-resume-work-history_fn3uml.js"></script>
 {% endblock %}

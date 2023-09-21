@@ -12,5 +12,8 @@ class Settings(BaseSettings):
     EMAIL_PORT: int
     EMAIL_USE_TLS: bool
     DEFAULT_FROM_EMAIL: EmailStr
+    CLOUDINARY_ID: str
+    CLOUDINARY_API_KEY: str
+    CLOUDINARY_API_SECRET: str
 
     model_config = SettingsConfigDict(env_file=ENV_FILE)
