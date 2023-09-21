@@ -1,0 +1,23 @@
+.profile-card {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5%;
+    width: auto;
+    min-height: 469px;
+    height: inherit;
+}
+
+.profile-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 5%;
+    object-fit: cover;
+}
+
+.profile-details {
+    flex: 1;
+}

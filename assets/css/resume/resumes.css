@@ -1,0 +1,45 @@
+.resumes-list {
+    margin-top: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5%;
+    width: auto;
+    min-height: 469px;
+    height: inherit;
+}
+
+.resume-item {
+    list-style: square;
+}
+
+.resume-title {
+    font-size: larger;
+    font-family: 'Courier New', Courier, monospace;
+    text-decoration: none;
+}
+
+/* Add this to your existing CSS stylesheet */
+.resume-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.edit-button,
+.delete-button {
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+    background-color: #0056b3;
+}

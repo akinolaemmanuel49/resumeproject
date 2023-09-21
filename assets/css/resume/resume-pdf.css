@@ -1,0 +1,44 @@
+.owner-name {
+    text-align: center;
+}
+
+.contact-details {
+    text-align: center;
+    font-size: smaller;
+}
+
+.item-container {
+    margin-left: 0px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.flex-container-custom {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.column-custom {
+    padding: 0px;
+}
+
+.fit-content-custom {
+    flex: 0 0 auto;
+    max-width: 160px;
+}
+
+.wrap-content-custom {
+    flex: 1;
+}
+
+.row-custom {
+    max-width: 300px;
+}
+
+.wrap-text-custom {
+    overflow-wrap: normal;
+    word-wrap: normal;
+}

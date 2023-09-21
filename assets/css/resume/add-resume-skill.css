@@ -1,0 +1,61 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-add-resume-skills {
+    width: 300px;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+.form-add-resume-skills {
+    max-width: 330px;
+    padding: 0.25rem;
+    min-height: 576px;
+    height: inherit;
+}
+
+.form-add-resume-skills .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-add-resume-skills #floatingName {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-add-resume-skills #floatingSkillLevel {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-add-resume-skills #deleteSkillItemButton {
+    margin-bottom: 25px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    width: 100%;
+}
+
+.delete-skill-item {
+    color: red;
+    text-decoration: none;
+}
+
+.add-new-skill-button {
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    height: calc(2.5rem + calc(var(--bs-border-width) * 2));
+}
+
+.submit-skills-button {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    height: calc(2.5rem + calc(var(--bs-border-width) * 2));
+}

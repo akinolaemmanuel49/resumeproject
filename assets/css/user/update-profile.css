@@ -1,0 +1,56 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-update-profile {
+    width: 300px;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+.form-update-profile {
+    max-width: 330px;
+    padding: 0.25rem;
+    height: 576px;
+}
+
+.form-update-profile .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-update-profile #floatingFirstName {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-update-profile #floatingLastName {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-update-profile #floatingEmail {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-update-profile #floatingPhone {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-update-profile #floatingImage {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.update-profile-button {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    height: calc(2.5rem + calc(var(--bs-border-width) * 2));
+}
