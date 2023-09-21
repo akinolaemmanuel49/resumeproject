@@ -13,6 +13,9 @@ ENV EMAIL_HOST_PASSWORD "password"
 ENV EMAIL_PORT 587
 ENV EMAIL_USE_TLS True
 ENV DEFAULT_FROM_EMAIL "resumebuilder@resumebuilder.com"
+ENV CLOUDINARY_ID "cloudinary_id"
+ENV CLOUDINARY_API_KEY "cloudinary_api_key"
+ENV CLOUDINARY_API_SECRET "cloudinary_secret"
 
 # Create and set the working directory
 WORKDIR /app
