@@ -29,6 +29,18 @@ class UserCreateViewTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("auth:login-view"))
 
+    def test_user_create_view_post_no_email(self):
+        response = self.client.post(
+            reverse("user:create-user-view"),
+            {
+                "password": "password",
+                "confirm_password": "password",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, "user/register.html")
+        self.assertIn("error_message", response.context)
+
     def test_user_create_view_post_password_validation_fail(self):
         response = self.client.post(
             reverse("user:create-user-view"),
@@ -40,6 +52,7 @@ class UserCreateViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, "user/register.html")
+        self.assertIn("error_message", response.context)
 
     def test_user_create_view_post_email_already_exists(self):
         response = self.client.post(
@@ -52,6 +65,7 @@ class UserCreateViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 409)
         self.assertTemplateUsed(response, "user/register.html")
+        self.assertIn("error_message", response.context)
 
     def test_user_create_view_post_passwords_do_not_match(self):
         response = self.client.post(
@@ -64,6 +78,7 @@ class UserCreateViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, "user/register.html")
+        self.assertIn("error_message", response.context)
 
     def tearDown(self) -> None:
         self.user.delete()

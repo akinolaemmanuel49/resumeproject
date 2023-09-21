@@ -32,53 +32,66 @@ class UserCreateView(View):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
-        # Handle user already exists.
-        if User.objects.filter(email=email).exists():
-            self.context.update(
-                {
-                    "error_message": [
-                        "Invalid input. This email address is already \
-                associated with an account."
-                    ]
-                }
-            )
-            return render(request, self.template, self.context, status=409)
+        if email:
 
-        # Handle password confirmation.
-        if password == confirm_password:
-            # Handle user creation.
-            try:
-                User.objects.create_user(email, password)
-                # Pass message to template
-                self.add_message(
-                    request,
-                    "You have successfully created an account. Please login.",
-                    messages.SUCCESS,
-                )
-                return redirect("auth:login-view")
-            # Handle errors arising from user creation.
-            # Handle errors of the type ValidationError.
-            except ValidationError as e:
-                self.context.update({"error_message": list(e.messages)})
-                return render(request, self.template, self.context, status=400)
-            # Handle errors of the type PydanticCustomError.
-            except PydanticCustomError as e:
+            # Handle user already exists.
+            if User.objects.filter(email=email).exists():
                 self.context.update(
-                    {"error_message": email_error_message_handler(e.message())}
+                    {
+                        "error_message": [
+                            "Invalid input. This email address is already \
+                    associated with an account."
+                        ]
+                    }
                 )
-                return render(request, self.template, self.context, status=400)
-        else:
-            self.context.update(
-                {
-                    "error_message": ["Invalid input. Passwords do not match"],
+                return render(request, self.template, self.context, status=409)
+
+            # Handle password confirmation.
+            if password == confirm_password:
+                # Handle user creation.
+                try:
+                    User.objects.create_user(email, password)
+                    # Pass message to template
+                    self.add_message(
+                        request,
+                        "You have successfully created an account. Please login.",
+                        messages.SUCCESS,
+                    )
+                    return redirect("auth:login-view")
+                # Handle errors arising from user creation.
+                # Handle errors of the type ValidationError.
+                except ValidationError as e:
+                    self.context.update({"error_message": list(e.messages)})
+                    return render(request, self.template, self.context, status=400)
+                # Handle errors of the type PydanticCustomError.
+                except PydanticCustomError as e:
+                    self.context.update(
+                        {"error_message": email_error_message_handler(e.message())}
+                    )
+                    return render(request, self.template, self.context, status=400)
+            else:
+                self.context.update(
+                    {
+                        "error_message": ["Invalid input. Passwords do not match"],
+                    }
+                )
+                return render(
+                    request,
+                    self.template,
+                    self.context,
+                    status=400,
+                )
+        self.context.update(
+            {
+                "error_message": ["Invalid input. No email provided."],
                 }
             )
-            return render(
-                request,
-                self.template,
-                self.context,
-                status=400,
-            )
+        return render(
+            request,
+            self.template,
+            self.context,
+            status=400,
+        )
 
 
 class UserEditProfileView(ProtectedView):
