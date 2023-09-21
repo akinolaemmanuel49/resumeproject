@@ -3,7 +3,7 @@ FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED 1
-ENV DJANGO_SETTINGS_MODULE projectname.settings
+ENV DJANGO_SETTINGS_MODULE resumeproject.settings
 ENV SECRET_KEY "secret-key"
 
 # Environment variables for email. Replace with appropriate values.
