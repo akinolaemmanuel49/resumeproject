@@ -167,6 +167,7 @@ cython_debug/
 
 # Static and media files
 images
+!/static/dist/
 
 # Other files and directories
 dump.txt
