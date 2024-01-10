@@ -59,16 +59,11 @@ def send_recover_password_mail(
     from_email: EmailStr | None = None,
     user_profile: Profile | None = None,
 ) -> None:
-    password_token_reset_link = request.build_absolute_uri(
-        reverse("auth:password-reset-set-token")
-    )
-
     html_message = render_to_string(
         template,
         {
             "user_profile": user_profile,
             "token": token,
-            "password_token_reset_link": password_token_reset_link,
         },
     )
     send_mail(
