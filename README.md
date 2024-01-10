@@ -123,3 +123,6 @@ This command will execute the test suite and provide you with information about 
 Feel free to explore the app's features, create resumes, and generate PDFs of your resumes!
 
 If you encounter any issues or have questions, please don't hesitate to open an issue on this repository. Happy coding!
+
+### Note:
+This project has only been tested on a Windows Operating System (Windows 10). The workflow to implement it on a UNIX based machine will be different.
