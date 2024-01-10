@@ -2,17 +2,17 @@
 FROM python:3.11-slim
 
 # Set environment variables
-# ENV PYTHONUNBUFFERED 1
-# ENV DJANGO_SETTINGS_MODULE resumeproject.settings
-# ENV SECRET_KEY "secret-key"
+ENV PYTHONUNBUFFERED 1
+ENV DJANGO_SETTINGS_MODULE resumeproject.settings
+ENV SECRET_KEY "secret-key"
 
 # Environment variables for email. Replace with appropriate values.
-# ENV EMAIL_HOST "smtp.provider.com"
-# ENV EMAIL_HOST_USER "example@mail.com"
-# ENV EMAIL_HOST_PASSWORD "password"
-# ENV EMAIL_PORT 587
-# ENV EMAIL_USE_TLS True
-# ENV DEFAULT_FROM_EMAIL "resumebuilder@resumebuilder.com"
+ENV EMAIL_HOST "smtp.provider.com"
+ENV EMAIL_HOST_USER "example@mail.com"
+ENV EMAIL_HOST_PASSWORD "password"
+ENV EMAIL_PORT 587
+ENV EMAIL_USE_TLS True
+ENV DEFAULT_FROM_EMAIL "resumebuilder@resumebuilder.com"
 
 # Create and set the working directory
 WORKDIR /app
