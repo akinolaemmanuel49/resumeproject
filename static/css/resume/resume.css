@@ -1,44 +1,101 @@
-.owner-name {
+ /* CSS Reset to avoid theme conflicts */
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    font-family: 'Arial', sans-serif;
+    background: none !important; /* Remove background from body */
+    color: inherit !important; /* Use inheritable color for body text */
+}
+
+.resume-detail {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+.resume-header img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
 }
 
 .contact-details {
-    text-align: center;
-    font-size: smaller;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
 }
 
-.item-container {
-    margin-left: 50px;
+.contact-details p {
+    margin: 5px 0;
+}
+
+.content-table {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    text-align: left;
+}
+
+.content-table h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 5px;
+}
+
+.content-table ul {
+    list-style: none;
+    padding: 0;
+}
+
+.content-table li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
 }
 
 .bold {
     font-weight: bold;
+    color: #007bff;
 }
 
-.flex-container-custom {
+.skills-list {
     display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.column-custom {
-    padding: 0px;
+.skill-badge {
+    background: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
 }
 
-.fit-content-custom {
-    flex: 0 0 auto;
-    max-width: 160px;
+.conditional-button {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #007bff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.wrap-content-custom {
-    flex: 1;
-}
-
-.row-custom {
-    max-width: 300px;
-}
-
-.wrap-text-custom {
-    overflow-wrap: normal;
-    word-wrap: normal;
+.download-button {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
 }

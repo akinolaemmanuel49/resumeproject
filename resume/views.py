@@ -1,13 +1,14 @@
 from typing import Any
 
-import pdfkit
+import tempfile
+from weasyprint import HTML
+from django.conf import settings
 from django.http import HttpRequest
 from django.shortcuts import redirect, render, HttpResponse
 from django.template.loader import render_to_string
 from django.db import DatabaseError, IntegrityError
 from django.db.transaction import TransactionManagementError
 
-from resumeproject.settings import PDFKIT_CONFIG
 from user.models import Profile
 from resume.models import Education, Resume, Skill, Social, WorkHistory
 from resumeproject.utils import ProtectedView
@@ -301,17 +302,21 @@ class DownloadResumeAction(ProtectedView):
         }
         try:
             resume = Resume.objects.get(id=id)
+            image_path = resume.image.url
+            image_url = request.build_absolute_uri(image_path)
             self.context.update(
                 {
                     "resume": resume,
+                    "image_url": image_url,
                     "is_preview": False,
                 }
             )
-            html = render_to_string(self.template, self.context)
+            html_string = render_to_string(self.template, self.context)
 
-            pdf = pdfkit.from_string(
-                html, False, configuration=PDFKIT_CONFIG, options=options
-            )
+            with tempfile.NamedTemporaryFile(delete=True) as output:
+                HTML(string=html_string).write_pdf(output.name, options=options)
+                output.seek(0)
+                pdf = output.read()
 
             response = HttpResponse(pdf, content_type="application/pdf")
             response[
