@@ -27,6 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env.SECRET_KEY
+MAILGUN_API_KEY = env.MAILGUN_API_KEY
+MAILGUN_DOMAIN_NAME = env.MAILGUN_DOMAIN_NAME
+MAILGUN_POSTMASTER = env.MAILGUN_POSTMASTER
+MAILGUN_YOU = env.MAILGUN_YOU
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
