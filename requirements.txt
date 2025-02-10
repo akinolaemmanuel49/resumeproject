@@ -20,7 +20,7 @@ pluggy==1.3.0
 pycparser==2.22
 pydantic==2.3.0
 pydantic-settings==2.0.3
-pydantic_core==2.6.3
+pydantic_core==2.10.0
 pydyf==0.11.0
 pyphen==0.17.2
 pytest==7.4.2
