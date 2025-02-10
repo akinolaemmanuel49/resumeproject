@@ -27,6 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env.SECRET_KEY
+BASE_URL = env.BASE_URL
 MAILGUN_API_KEY = env.MAILGUN_API_KEY
 MAILGUN_DOMAIN_NAME = env.MAILGUN_DOMAIN_NAME
 MAILGUN_POSTMASTER = env.MAILGUN_POSTMASTER
@@ -37,7 +38,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-BASE_URL = env.BASE_URL
 LOGIN_URL = 'auth:login-view'
 LOGOUT_URL = 'auth:logout-view'
 
@@ -101,14 +101,6 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'user.User'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = env.EMAIL_HOST
-EMAIL_HOST_USER = env.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = env.EMAIL_HOST_PASSWORD
-EMAIL_PORT = env.EMAIL_PORT
-EMAIL_USE_TLS = env.EMAIL_USE_TLS
-DEFAULT_FROM_EMAIL = env.DEFAULT_FROM_EMAIL
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

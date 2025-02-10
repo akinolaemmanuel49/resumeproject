@@ -81,17 +81,7 @@ class AuthResetPasswordGetEmailView(View):
                 )
                 return redirect("auth:password-reset-set-token")
             except Profile.DoesNotExist:
-                send_recover_password_mail(
-                    user_profile=user_profile,
-                    recipient=user_profile.email,
-                    variables={
-                        "firstName":user_profile.first_name, 
-                        "token": token.token, 
-                        "support_email":"biteatertest@gmail.com", 
-                        "company": "Biteater0"
-                        }
-                )
-                return redirect("auth:password-reset-set-token")
+                return redirect("user:create-user-view")
         except User.DoesNotExist:
             self.context.update({"error_message": "User not found."})
             return render(request, self.template, self.context)

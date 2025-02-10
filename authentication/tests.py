@@ -61,7 +61,6 @@ class AuthLoginViewTestCase(TestCase):
     def tearDown(self) -> None:
         self.user.delete()
 
-
 class AuthResetPasswordGetEmailViewTestCase(TestCase):
     def setUp(self) -> None:
         self.client = Client()
@@ -74,12 +73,12 @@ class AuthResetPasswordGetEmailViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "auth/password_reset_email.html")
 
-    def test_auth_reset_password_get_email_view_post_success(self):
+    def test_auth_reset_password_get_email_view_profile_not_found(self):
         response = self.client.post(
             reverse("auth:password-reset-get-email"), {"email": "janedoe@mail.com"}
         )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("auth:password-reset-set-token"))
+        self.assertRedirects(response, reverse("user:create-user-view"))
 
     def test_auth_reset_password_get_email_view_post_user_not_found(self):
         response = self.client.post(
@@ -88,6 +87,9 @@ class AuthResetPasswordGetEmailViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "auth/password_reset_email.html")
         self.assertContains(response, "User not found.")
+
+    def tearDown(self) -> None:
+        self.user.delete()
 
 
 class AuthResetPasswordSetTokenViewTestCase(TestCase):

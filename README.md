@@ -3,7 +3,6 @@
 [![codecov](https://codecov.io/gh/akinolaemmanuel49/resumeproject/graph/badge.svg?token=UUIUIOOP3C)](https://codecov.io/gh/akinolaemmanuel49/resumeproject)
 ![Test](https://github.com/akinolaemmanuel49/resumeproject/actions/workflows/django.yml/badge.svg?event=push)
 
-
 Welcome to the **ResumeProject** GitHub repository! This project is designed to help users create and manage their resumes online. It utilizes Django as the backend framework and Bootstrap 5 for the user interface. The app provides features such as user authentication, resume creation forms, and the ability to convert resumes to PDF format using wkhtmltopdf.
 
 ## Features
@@ -63,14 +62,14 @@ python manage.py createsuperuser
 ```
 
 6. Add the .env file and place it in the root directory, you can use the .env.example file for guidance or set the environment variables:
+
 ```bash
 SECRET_KEY="secret-key"
-EMAIL_HOST="smtp.provider.com"
-EMAIL_HOST_USER="example.mail.com"
-EMAIL_HOST_PASSWORD="password"
-EMAIL_PORT= 587
-EMAIL_USE_TLS=True
-DEFAULT_FROM_EMAIL="resumebuilder@resumebuilder.com"
+BASE_URL="http://127.0.0.1"
+MAILGUN_API_KEY="mailgun-api-key"
+MAILGUN_DOMAIN_NAME="mailgun-domain-name"
+MAILGUN_POSTMASTER="mailgun-postmaster"
+MAILGUN_YOU="mailgun-you"
 ```
 
 7. Run the development server:
@@ -88,41 +87,3 @@ This repository includes test cases to ensure the functionality of the app. To r
 ```bash
 python manage.py test
 ```
-
-## Installing wkhtmltopdf
-
-To install `wkhtmltopdf`, you can follow the instructions for your specific operating system. `wkhtmltopdf` is a command-line tool that converts HTML and CSS into PDF files. Here's how you can install it on various operating systems:
-
-### Linux (Ubuntu/Debian):
-
-You can install `wkhtmltopdf` on Ubuntu/Debian using the following commands:
-
-```bash
-sudo apt-get update
-sudo apt-get install wkhtmltopdf
-```
-
-### Windows:
-
-To install `wkhtmltopdf` on Windows, you can download the precompiled binary from the official website: https://wkhtmltopdf.org/downloads.html
-
-Choose the appropriate installer for your system (32-bit or 64-bit), download it, and run the installer to install `wkhtmltopdf` on your Windows machine.
-
-After installation, you should be able to use `wkhtmltopdf` from the command line to convert HTML to PDF.
-
-To test if `wkhtmltopdf` is installed correctly, open your terminal or command prompt and run:
-
-```bash
-wkhtmltopdf --version
-```
-
-This command should display the version information if `wkhtmltopdf` is installed successfully.
-
-This command will execute the test suite and provide you with information about the tests' success.
-
-Feel free to explore the app's features, create resumes, and generate PDFs of your resumes!
-
-If you encounter any issues or have questions, please don't hesitate to open an issue on this repository. Happy coding!
-
-### Note:
-This project has only been tested on a Windows Operating System (Windows 10). The workflow to implement it on a UNIX based machine will be different.

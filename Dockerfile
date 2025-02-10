@@ -7,12 +7,11 @@ ENV DJANGO_SETTINGS_MODULE resumeproject.settings
 ENV SECRET_KEY "secret-key"
 
 # Environment variables for email. Replace with appropriate values.
-ENV EMAIL_HOST "smtp.provider.com"
-ENV EMAIL_HOST_USER "example@mail.com"
-ENV EMAIL_HOST_PASSWORD "password"
-ENV EMAIL_PORT 587
-ENV EMAIL_USE_TLS True
-ENV DEFAULT_FROM_EMAIL "resumebuilder@resumebuilder.com"
+ENV BASE_URL http://127.0.0.1
+ENV MAILGUN_API_KEY <MAILGUN_API_KEY>
+ENV MAILGUN_DOMAIN_NAME <MAILGUN_DOMAIN_NAME>
+ENV MAILGUN_POSTMASTER <MAILGUN_POSTMASTER>
+ENV MAILGUN_YOU <MAILGUN_YOU>
 
 # Create and set the working directory
 WORKDIR /app
