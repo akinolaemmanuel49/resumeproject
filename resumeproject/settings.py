@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
-import pdfkit
-
 from resumeproject.env_var import Settings as Env
 
 
@@ -35,6 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+BASE_URL = env.BASE_URL
 LOGIN_URL = 'auth:login-view'
 LOGOUT_URL = 'auth:logout-view'
 
@@ -150,8 +149,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-WKHTMLTOPDF_CMD = os.path.join(BASE_DIR, 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')
-PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

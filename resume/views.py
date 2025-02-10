@@ -1,13 +1,16 @@
+import base64
 from typing import Any
+import mimetypes
 
-import pdfkit
+import tempfile
+from weasyprint import HTML
+from django.conf import settings
 from django.http import HttpRequest
 from django.shortcuts import redirect, render, HttpResponse
 from django.template.loader import render_to_string
 from django.db import DatabaseError, IntegrityError
 from django.db.transaction import TransactionManagementError
 
-from resumeproject.settings import PDFKIT_CONFIG
 from user.models import Profile
 from resume.models import Education, Resume, Skill, Social, WorkHistory
 from resumeproject.utils import ProtectedView
@@ -301,17 +304,29 @@ class DownloadResumeAction(ProtectedView):
         }
         try:
             resume = Resume.objects.get(id=id)
-            self.context.update(
-                {
-                    "resume": resume,
-                    "is_preview": False,
-                }
-            )
-            html = render_to_string(self.template, self.context)
+            image_url = request.build_absolute_uri(resume.image.url).replace("localhost", "127.0.0.1")
 
-            pdf = pdfkit.from_string(
-                html, False, configuration=PDFKIT_CONFIG, options=options
-            )
+            # Get MIME type
+            image_path = resume.image.path
+            mime_type, _ = mimetypes.guess_type(image_path)
+            mime_type = mime_type or "image/png"  # Default to PNG if unknown
+
+            # Convert image to base64
+            with open(image_path, "rb") as img_file:
+                image_data = base64.b64encode(img_file.read()).decode("utf-8")
+
+            self.context.update({
+                "resume": resume,
+                "image_base64": f"data:{mime_type};base64,{image_data}",
+                "is_preview": False,
+            })
+
+            html_string = render_to_string(self.template, self.context)
+
+            with tempfile.NamedTemporaryFile(delete=True) as output:
+                HTML(string=html_string).write_pdf(output.name, options=options)
+                output.seek(0)
+                pdf = output.read()
 
             response = HttpResponse(pdf, content_type="application/pdf")
             response[
@@ -324,7 +339,6 @@ class DownloadResumeAction(ProtectedView):
                 content_type="application/json",
                 status=404,
             )
-
 
 class DeleteResumeAction(ProtectedView):
     success_url = "resume:resumes-view"

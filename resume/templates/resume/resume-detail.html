@@ -9,102 +9,95 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
     <div class="container">
         <div class="resume-detail">
-            <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
-            <p class="contact-details">{{resume.phone}} | {{resume.email}}</p>
+            <!-- Profile Image -->
+            <div class="resume-header">
+                {% if resume.image %}
+                <img src="{{ resume.image.url }}" alt="{{ resume.first_name }}'s Photo">
+                {% endif %}
+            </div>
 
-            <h3>Profile</h3>
-            <hr>
-            <p class="item-container">{{ resume.description|linebreaks }}</p>
-            <!-- Display other resume details such as name, email, phone, etc. -->
-
-            <h3>Work History</h3>
-            <hr>
-            <ul class="item-container">
-                {% for work_history in resume.workhistory_set.all %}
-                <li>
-                    <div class="flex-container-custom">
-                        <div class="column-custom wrap-content-custom">
-                            <p class="bold">{{ work_history.name }}</p>
-                            <div class="row-custom">
-                                <p class="wrap-text-custom">
-                                    {{ work_history.position }}
-                                </p>
-                                <p class="wrap-text-custom">
-                                    {{ work_history.job_description|linebreaks }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="column-custom fit-content-custom">
-                            <p>{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date != None %} {{ work_history.end_date|date:"M Y" }} {% else %} Current {% endif %}</p>
-                        </div>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-
-            <h3>Education</h3>
-            <hr>
-            <ul class="item-container">
-                {% for education in resume.education_set.all %}
-                <li>
-                    <div class="flex-container-custom">
-                        <div class="column-custom wrap-content-custom">
-                            <p class="bold">{{ education.institution }}</p>
-                            <div class="row-custom">
-                                <p class="wrap-text-custom">
-                                    {{ education.degree }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="column-custom fit-content-custom">
-                            <p>{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</p>
-                        </div>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-
-            <h3>Skills</h3>
-            <hr>
-            <ul class="item-container">
-                {% for skill in resume.skill_set.all %}
-                <li>{{ skill.name }} - {{ skill.get_level_display }}</li>
-                {% endfor %}
-            </ul>
-
-            <h3>Social</h3>
-            <hr>
-            <ul class="item-container">
+            <!-- Contact Details -->
+            <div class="contact-details">
+                <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
+                <h6>{{ resume.title }}</h6>
+                <p>{{ resume.phone }} | <a href="mailto:{{ resume.email }}">{{ resume.email }}</a>
                 {% for social in resume.social_set.all %}
-                <li>{{ social.name }}: <a href="{{ social.url }}" target="_blank">{{ social.url }}</a></li>
+                | <a href="{{ social.url }}">{{ social.url }}</a>
                 {% endfor %}
-            </ul>
+                </p>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="content-table">
+                <!-- Left Column -->
+                <div>
+                    <div class="summary-section">
+                        <h3>Summary</h3>
+                        <p>{{ resume.description|linebreaks }}</p>
+                    </div>
+
+                    <h3>Work Experience</h3>
+                    <ul>
+                        {% for work_history in resume.workhistory_set.all %}
+                        <li>
+                            <p class="bold">{{ work_history.name }}</p>
+                            <p>{{ work_history.position }}</p>
+                            <p>{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date %}
+                                {{ work_history.end_date|date:"M Y" }}{% else %}Current{% endif %}</p>
+                            <p>{{ work_history.job_description|linebreaks }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <h3>Education</h3>
+                    <ul>
+                        {% for education in resume.education_set.all %}
+                        <li>
+                            <p class="bold">{{ education.institution }}</p>
+                            <p>{{ education.degree }}</p>
+                            <p>{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <h3>Skills</h3>
+                    <div class="skills-list">
+                        {% for skill in resume.skill_set.all %}
+                        <span class="skill-badge">{{ skill.name }} - {{ skill.get_level_display }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     {% if is_preview == True %}
-        <div class="conditional-button">
-            <a href="{% url 'resume:preview-pdf-resume-view' id=resume.id %}" target="_blank" class="download-button">Preview</a>
-        </div>
+    <div class="conditional-button">
+        <a href="{% url 'resume:preview-pdf-resume-view' id=resume.id %}" target="_blank"
+            class="download-button">Preview</a>
+    </div>
 
-    </main>
-    <style>
-        .conditional-button {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #007bff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-        }
+</main>
+<style>
+    .conditional-button {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #007bff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-        .download-button {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
-    {% endif %}
-    </main>
+    .download-button {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+</style>
+{% endif %}
+</main>
 {% endblock %}

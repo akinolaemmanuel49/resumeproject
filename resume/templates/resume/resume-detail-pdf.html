@@ -1,213 +1,254 @@
-<!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.115.4">
-    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @page {
             size: A4;
             margin: 0;
         }
 
+        /* General Reset and A4 Page Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', 'Helvetica', sans-serif !important;
             background-color: #fff;
             margin: 0;
             padding: 1rem 0;
+            height: 1123px;
+            font-variant-ligatures: none;
         }
 
         .container {
             margin: 0 auto;
             max-width: 800px;
             padding: 0 1rem;
+            height: 100%;
         }
 
         .resume-detail {
-            background-color: #fff;
+            width: 100%;
             padding: 1rem;
+            margin: 0;
+            font-size: 12px;
         }
 
-        .owner-name {
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 0.5rem;
-        }
-
+        /* Centered Contact Info */
         .contact-details {
             text-align: center;
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 1rem;
+            margin-bottom: 20px;
         }
 
-        .section-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 1rem;
+        .contact-details h2 {
+            font-size: 22px;
+            margin-bottom: 5px;
         }
 
-        .description {
-            margin-top: 0.5rem;
+        .contact-details h6 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .contact-details p {
+            font-size: 14px;
             color: #555;
+            margin: 5px 0;
         }
 
-        .item-list {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .item {
-            border-bottom: 1px solid #ccc;
-            padding: 1rem 0;
-        }
-
-        .item-list .item:last-child {
-            border-bottom: none;
-        }
-
-        .date-range,
-        .bold,
-        .tab {
-            padding-left: 1rem;
-        }
-
-        .date-range {
-            width: 235px;
-        }
-
-        .tab {
-            font-size: 12px;
-            color: #777;
-        }
-
-        .social-link {
+        .contact-details a {
             color: #007bff;
             text-decoration: none;
         }
 
+        /* Resume Header and Profile Image */
+        .resume-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .resume-header img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Two-column layout for Resume Sections */
+        .summary-section {
+            margin-bottom: 20px;
+        }
+
+        .content-table {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .content-table>div {
+            width: 48%;
+            margin-bottom: 20px;
+        }
+
+        .content-table h3 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 5px;
+        }
+
+        .content-table ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .content-table li {
+            margin-bottom: 15px;
+        }
+
+        .content-table .bold {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* Skills Section */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            /* Add spacing between badges */
+            align-items: center;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            margin-bottom: 5px;
+            margin-left: 5px;
+            /* Prevent breaking inside badges */
+        }
+
+        /* Conditional Download Link */
+        .conditional-button {
+            text-align: center;
+            margin-top: 30px;
+        }
+
         .download-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             background-color: #007bff;
             color: white;
             text-decoration: none;
+            font-weight: bold;
             padding: 10px 20px;
             border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            display: block;
-            margin: 20px auto 0;
-            width: 150px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease-in-out;
         }
 
         .download-button:hover {
             background-color: #0056b3;
         }
-
-        .detail {
-            text-align: right;
-        }
     </style>
 </head>
 
 <body>
-    <main>
-        <div class="container">
-            <div class="resume-detail">
-                <table class="item-list">
-                    <tr class="item">
-                        <td colspan="2">
-                            <h1 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h1>
-                            <p class="contact-details">{{ resume.phone }} | {{ resume.email }}</p>
-                        </td>
-                    </tr>
-                </table>
-
-                <table class="item-list">
-                    <tr class="item">
-                        <td colspan="2">
-                            <h2 class="section-title">Profile</h2>
-                            <p class="description">{{ resume.description|linebreaks }}</p>
-                        </td>
-                    </tr>
-                </table>
-
-                <table class="item-list">
-                    <tr class="item">
-                        <td colspan="2">
-                            <h2 class="section-title">Work History</h2>
-                        </td>
-                    </tr>
-                    {% for work_history in resume.workhistory_set.all %}
-                    <tr class="item">
-                        <td class="date-range">{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date != None %} {{ work_history.end_date|date:"M Y" }} {% else %} Current {% endif %}</td>
-                        <td class="detail">
-                            <p class="bold">{{ work_history.name }}</p>
-                            <p class="tab">{{ work_history.position }}</p>
-                            <p class="description">{{ work_history.job_description|linebreaks }}</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-
-                <table class="item-list">
-                    <tr class="item">
-                        <td colspan="2">
-                            <h2 class="section-title">Education</h2>
-                        </td>
-                    </tr>
-                    {% for education in resume.education_set.all %}
-                    <tr class="item">
-                        <td class="date-range">{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</td>
-                        <td class="detail">
-                            <p class="bold">{{ education.institution }}</p>
-                            <p class="tab">{{ education.degree }}</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-
-                <table class="item-list">
-                    <tr class="item">
-                        <td colspan="2">
-                            <h2 class="section-title">Skills</h2>
-                        </td>
-                    </tr>
-                    {% for skill in resume.skill_set.all %}
-                    <tr class="item">
-                        <td class="bold">{{ skill.name }}</td>
-                        <td  class="detail">
-                            <p class="tab">{{ skill.get_level_display }}</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-
-                <table class="item-list">
-                    <tr class="item">
-                        <td colspan="2">
-                            <h2 class="section-title">Social</h2>
-                        </td>
-                    </tr>
-                    {% for social in resume.social_set.all %}
-                    <tr class="item">
-                        <td class="bold"><a href="{{ social.url }}" target="_blank">{{ social.name }}</a></td>
-                        <td></td>
-                    </tr>
-                    {% endfor %}
-                </table>
-
-                {% if is_preview == True %}
-                <div class="social-links">
-                    <a href="{% url 'resume:download-resume-action' id=resume.id %}" target="_blank" class="download-button">Download Resume</a>
-                </div>
+    <div class="container">
+        <div class="resume-detail">
+            <!-- Profile Image -->
+            <div class="resume-header">
+                {% if resume.image %}
+                <img src="{% if not is_preview %}{{ image_base64 }}{% else %}{{ resume.image.url }}{% endif %}"
+                    alt="{{ resume.first_name }}'s Photo" />
                 {% endif %}
             </div>
+
+            <!-- Contact Details -->
+            <div class="contact-details">
+                <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
+                <h6>{{ resume.title }}</h6>
+                <p>{{ resume.phone }} | <a href="mailto:{{ resume.email }}">{{ resume.email }}</a>
+                    {% for social in resume.social_set.all %}
+                    | <a href="{{ social.url }}">{{ social.url }}</a>
+                    {% endfor %}
+                </p>
+            </div>
+
+            <!-- Two Column Layout for Resume Content -->
+            <div class="content-table">
+                <!-- Left Column (Summary, Work Experience, Education) -->
+                <div>
+                    <div class="summary-section">
+                        <h3>Summary</h3>
+                        <p>{{ resume.description|linebreaks }}</p>
+                    </div>
+
+
+                    <h3>Work Experience</h3>
+                    <ul>
+                        {% for work_history in resume.workhistory_set.all %}
+                        <li>
+                            <p class="bold">{{ work_history.name }}</p>
+                            <p>
+                                <u>{{ work_history.position }}</u>
+                            </p>
+                            <p>
+                                <u>{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date %}
+                                    {{ work_history.end_date|date:"M Y" }}{% else %}Current{% endif %}
+                                </u>
+                            </p>
+                            <p>{{ work_history.job_description|linebreaks }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <h3>Education</h3>
+                    <ul>
+                        {% for education in resume.education_set.all %}
+                        <li>
+                            <p class="bold">{{ education.institution }}</p>
+                            <p>{{ education.degree }}</p>
+                            <p>{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Right Column (Skills) -->
+                <div>
+                    <h3>Skills</h3>
+                    <div class="skills-list">
+                        {% for skill in resume.skill_set.all %}
+                        <span class="skill-badge">{{ skill.name }} - {{ skill.get_level_display }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
-    </main>
+
+        {% if is_preview == True %}
+        <div class="conditional-button">
+            <a href="{% url 'resume:download-resume-action' id=resume.id %}" target="_blank"
+                class="download-button">Download Resume</a>
+        </div>
+        {% endif %}
+    </div>
 </body>
 
 </html>
