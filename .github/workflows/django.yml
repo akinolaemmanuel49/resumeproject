@@ -14,6 +14,11 @@ env:
   EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
   EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
   DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
+  BASE_URL: ${{ secrets.BASE_URL }}
+  MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+  MAILGUN_DOMAIN_NAME: ${{ secrets.MAILGUN_DOMAIN_NAME }}
+  MAILGUN_POSTMASTER: ${{ secrets.MAILGUN_POSTMASTER }}
+  MAILGUN_YOU: ${{ secrets.MAILGUN_YOU }}
 
 jobs:
   build:
