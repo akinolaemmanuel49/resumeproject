@@ -70,19 +70,26 @@ class AuthResetPasswordGetEmailView(View):
             try:
                 user_profile = Profile.objects.get(user=user)
                 send_recover_password_mail(
-                    email=email,
-                    template="password_reset_email.html",
-                    token=token.token,
-                    request=request,
                     user_profile=user_profile,
+                    recipient=user_profile.email,
+                    variables={
+                        "firstName":user_profile.first_name, 
+                        "token": token.token, 
+                        "support_email":"biteatertest@gmail.com", 
+                        "company": "Biteater0"
+                        }
                 )
                 return redirect("auth:password-reset-set-token")
             except Profile.DoesNotExist:
                 send_recover_password_mail(
-                    email=email,
-                    template="password_reset_email.html",
-                    token=token.token,
-                    request=request,
+                    user_profile=user_profile,
+                    recipient=user_profile.email,
+                    variables={
+                        "firstName":user_profile.first_name, 
+                        "token": token.token, 
+                        "support_email":"biteatertest@gmail.com", 
+                        "company": "Biteater0"
+                        }
                 )
                 return redirect("auth:password-reset-set-token")
         except User.DoesNotExist:

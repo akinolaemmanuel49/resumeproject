@@ -120,12 +120,16 @@
             color: #007bff;
         }
 
+        .section-title {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
         /* Skills Section */
         .skills-list {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            /* Add spacing between badges */
             align-items: center;
         }
 
@@ -139,8 +143,17 @@
             white-space: nowrap;
             margin-bottom: 5px;
             margin-left: 5px;
-            /* Prevent breaking inside badges */
         }
+
+        .work-history ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .work-history li {
+            margin-bottom: 5px;
+        }
+
 
         /* Conditional Download Link */
         .conditional-button {
@@ -192,33 +205,14 @@
 
             <!-- Two Column Layout for Resume Content -->
             <div class="content-table">
-                <!-- Left Column (Summary, Work Experience, Education) -->
+                <!-- Left Column (Summary, Education, Work Experience) -->
                 <div>
                     <div class="summary-section">
-                        <h3>Summary</h3>
-                        <p>{{ resume.description|linebreaks }}</p>
+                        <h3 class="section-title">SUMMARY</h3>
+                        <p>{{ resume.description }}</p>
                     </div>
 
-
-                    <h3>Work Experience</h3>
-                    <ul>
-                        {% for work_history in resume.workhistory_set.all %}
-                        <li>
-                            <p class="bold">{{ work_history.name }}</p>
-                            <p>
-                                <u>{{ work_history.position }}</u>
-                            </p>
-                            <p>
-                                <u>{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date %}
-                                    {{ work_history.end_date|date:"M Y" }}{% else %}Current{% endif %}
-                                </u>
-                            </p>
-                            <p>{{ work_history.job_description|linebreaks }}</p>
-                        </li>
-                        {% endfor %}
-                    </ul>
-
-                    <h3>Education</h3>
+                    <h3 class="section-title">EDUCATION</h3>
                     <ul>
                         {% for education in resume.education_set.all %}
                         <li>
@@ -228,14 +222,34 @@
                         </li>
                         {% endfor %}
                     </ul>
+
+                    <h3 class="section-title">WORK EXPERIENCE</h3>
+                    <ul class="work-history">
+                        {% for work_history in resume.workhistory_set.all %}
+                        <li>
+                            <p class="bold">{{ work_history.name }}</p>
+                            <p><u>{{ work_history.position }}</u></p>
+                            <p><u>{{ work_history.start_date|date:"M Y" }} -
+                                    {% if work_history.end_date %}{{ work_history.end_date|date:"M Y" }}
+                                    {% else %}Current{% endif %}
+                                </u></p>
+                            <ul>
+                                {% for line in work_history.job_description.splitlines %}
+                                <li class="job-description-item">{{ line }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
                 </div>
 
                 <!-- Right Column (Skills) -->
                 <div>
-                    <h3>Skills</h3>
+                    <h3 class="section-title">SKILLS</h3>
                     <div class="skills-list">
                         {% for skill in resume.skill_set.all %}
-                        <span class="skill-badge">{{ skill.name }} - {{ skill.get_level_display }}</span>
+                        <span class="skill-badge">{{ skill.name }}</span>
                         {% endfor %}
                     </div>
                 </div>

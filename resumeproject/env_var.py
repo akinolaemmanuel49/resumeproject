@@ -13,5 +13,9 @@ class Settings(BaseSettings):
     EMAIL_USE_TLS: bool
     DEFAULT_FROM_EMAIL: EmailStr
     BASE_URL: str
+    MAILGUN_API_KEY: str
+    MAILGUN_DOMAIN_NAME:str
+    MAILGUN_POSTMASTER:str
+    MAILGUN_YOU: str
 
     model_config = SettingsConfigDict(env_file=ENV_FILE)

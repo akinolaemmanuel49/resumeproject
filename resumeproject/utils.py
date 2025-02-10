@@ -1,3 +1,5 @@
+from typing import Dict, List
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponseRedirect
@@ -7,6 +9,7 @@ from django.urls import reverse
 from django.views import View
 from django.core.mail import send_mail
 from pydantic import EmailStr
+import requests
 
 from user.models import Profile, User
 
@@ -49,27 +52,37 @@ def email_error_message_handler(error_message: str) -> list[str]:
         return [error_message]
 
 
-def send_recover_password_mail(
-    email: EmailStr,
-    template: str,
-    token: str,
-    request: HttpRequest,
-    subject: str = "Password Reset Request",
-    message: str = "Please check your email for instructions on resetting your password.",
-    from_email: EmailStr | None = None,
-    user_profile: Profile | None = None,
-) -> None:
-    html_message = render_to_string(
-        template,
-        {
-            "user_profile": user_profile,
-            "token": token,
-        },
-    )
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email=from_email,
-        recipient_list=[email],
-        html_message=html_message,
-    )
+# def send_recover_password_mail(user_profile, recipient: EmailStr, variables: Dict[str, str]):
+#     endpoint = f"https://api.mailgun.net/v3/{settings.MAILGUN_DOMAIN_NAME}/messages"
+#     auth = ("api", settings.MAILGUN_API_KEY)
+#     data = {
+#         "from": f"Biteater0 <{settings.MAILGUN_POSTMASTER}>",
+#         "to": [f"{user_profile.first_name} {user_profile.last_name}, <{recipient}>"],
+#         "subject": "Recover your password",
+#         "template": "password_reset",
+#         **{f'v:{key}': value for key, value in variables.items()}
+#     }
+#     response = requests.post(endpoint, auth=auth, data=data)
+#     return response
+
+def send_recover_password_mail(user_profile, recipient: EmailStr, variables: Dict[str, str]):
+    endpoint = f"https://api.mailgun.net/v3/{settings.MAILGUN_DOMAIN_NAME}/messages"
+    auth = ("api", settings.MAILGUN_API_KEY)
+    data = {
+        "from": f"Biteater0 <{settings.MAILGUN_POSTMASTER}>",
+        "to": [f"{recipient} <{settings.MAILGUN_YOU}>"],
+        "subject": "Recover your password",
+        "text": (
+            f"Dear {variables['firstName']},\n\n"
+            "We received a request to reset the password for your account associated with this email address. "
+            "If you initiated this request, please click the link below to reset your password:\n\n"
+            f"{variables['token']}\n\n"
+            "This link will expire in 10 minutes for security purposes. If you did not request a password reset, "
+            "please ignore this email or contact our support team at "
+            f"{variables['support_email']}.\n\n"
+            "Best regards,\n\n"
+            f"{variables['company']} Support Team"
+        )
+    }
+    response = requests.post(endpoint, auth=auth, data=data)
+    return response
