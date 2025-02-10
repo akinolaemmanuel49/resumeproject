@@ -1,6 +1,5 @@
 {% load static %}
 
-{% block content %}
 <html lang="en">
 
 <head>
@@ -20,11 +19,12 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', 'Helvetica', sans-serif !important;
             background-color: #fff;
             margin: 0;
             padding: 1rem 0;
             height: 1123px;
+            font-variant-ligatures: none;
         }
 
         .container {
@@ -174,9 +174,8 @@
             <!-- Profile Image -->
             <div class="resume-header">
                 {% if resume.image %}
-                <img src="{% if is_preview == True %} {{ resume.image.url }} {% else %} {{ image_url }} {% endif %}"
-                    alt="{{ resume.first_name }}'s Photo">
-                <script>console.log("{{ image_url }}")</script>
+                <img src="{% if not is_preview %}{{ image_base64 }}{% else %}{{ resume.image.url }}{% endif %}"
+                    alt="{{ resume.first_name }}'s Photo" />
                 {% endif %}
             </div>
 
@@ -184,10 +183,11 @@
             <div class="contact-details">
                 <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
                 <h6>{{ resume.title }}</h6>
-                <p>📞 {{ resume.phone }} 📧 <a href="mailto:{{ resume.email }}">{{ resume.email }}</a></p>
-                {% for social in resume.social_set.all %}
-                🔗 <a href="{{ social.url }}">{{ social.url }}</a><br>
-                {% endfor %}
+                <p>{{ resume.phone }} | <a href="mailto:{{ resume.email }}">{{ resume.email }}</a>
+                    {% for social in resume.social_set.all %}
+                    | <a href="{{ social.url }}">{{ social.url }}</a>
+                    {% endfor %}
+                </p>
             </div>
 
             <!-- Two Column Layout for Resume Content -->
@@ -252,4 +252,3 @@
 </body>
 
 </html>
-{% endblock %}

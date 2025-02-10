@@ -1,4 +1,6 @@
+import base64
 from typing import Any
+import mimetypes
 
 import tempfile
 from weasyprint import HTML
@@ -302,15 +304,23 @@ class DownloadResumeAction(ProtectedView):
         }
         try:
             resume = Resume.objects.get(id=id)
-            image_path = resume.image.url
-            image_url = request.build_absolute_uri(image_path)
-            self.context.update(
-                {
-                    "resume": resume,
-                    "image_url": image_url,
-                    "is_preview": False,
-                }
-            )
+            image_url = request.build_absolute_uri(resume.image.url).replace("localhost", "127.0.0.1")
+
+            # Get MIME type
+            image_path = resume.image.path
+            mime_type, _ = mimetypes.guess_type(image_path)
+            mime_type = mime_type or "image/png"  # Default to PNG if unknown
+
+            # Convert image to base64
+            with open(image_path, "rb") as img_file:
+                image_data = base64.b64encode(img_file.read()).decode("utf-8")
+
+            self.context.update({
+                "resume": resume,
+                "image_base64": f"data:{mime_type};base64,{image_data}",
+                "is_preview": False,
+            })
+
             html_string = render_to_string(self.template, self.context)
 
             with tempfile.NamedTemporaryFile(delete=True) as output:
@@ -329,7 +339,6 @@ class DownloadResumeAction(ProtectedView):
                 content_type="application/json",
                 status=404,
             )
-
 
 class DeleteResumeAction(ProtectedView):
     success_url = "resume:resumes-view"

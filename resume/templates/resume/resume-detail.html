@@ -20,9 +20,9 @@
             <div class="contact-details">
                 <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
                 <h6>{{ resume.title }}</h6>
-                <p>📞 {{ resume.phone }} 📧 <a href="mailto:{{ resume.email }}">{{ resume.email }}</a></p>
+                <p>{{ resume.phone }} | <a href="mailto:{{ resume.email }}">{{ resume.email }}</a>
                 {% for social in resume.social_set.all %}
-                🔗 <a href="{{ social.url }}">{{ social.url }}</a>
+                | <a href="{{ social.url }}">{{ social.url }}</a>
                 {% endfor %}
                 </p>
             </div>

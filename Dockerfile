@@ -34,12 +34,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the current directory contents into the container at /app
 COPY . /app/
 
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
 # Expose the port the app runs on
 EXPOSE 8000
 
 # Run Django's development server
 RUN python manage.py makemigrations && python manage.py migrate
-CMD ["python", "manage.py", "runserver"]
-
-# Collect static files
-RUN python manage.py collectstatic --noinput
+CMD ["gunicorn", "--bind", "127.0.0.1:8000", "resumeproject.wsgi:application", "--workers=4"]

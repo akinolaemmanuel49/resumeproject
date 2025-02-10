@@ -33,6 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+BASE_URL = env.BASE_URL
 LOGIN_URL = 'auth:login-view'
 LOGOUT_URL = 'auth:logout-view'
 
