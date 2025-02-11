@@ -34,7 +34,7 @@ MAILGUN_POSTMASTER = env.MAILGUN_POSTMASTER
 MAILGUN_YOU = env.MAILGUN_YOU
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

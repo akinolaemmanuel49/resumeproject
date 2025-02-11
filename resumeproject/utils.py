@@ -70,7 +70,7 @@ def send_recover_password_mail(user_profile, recipient: EmailStr, variables: Dic
     auth = ("api", settings.MAILGUN_API_KEY)
     data = {
         "from": f"Biteater0 <{settings.MAILGUN_POSTMASTER}>",
-        "to": [f"{recipient} <{settings.MAILGUN_YOU}>"],
+        "to": [f"{recipient} <{recipient}>"],
         "subject": "Recover your password",
         "text": (
             f"Dear {variables['firstName']},\n\n"

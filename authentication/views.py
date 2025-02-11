@@ -73,6 +73,7 @@ class AuthResetPasswordGetEmailView(View):
                     user_profile=user_profile,
                     recipient=user_profile.email,
                     variables={
+                        "user_profile": user_profile,
                         "firstName":user_profile.first_name, 
                         "token": token.token, 
                         "support_email":"biteatertest@gmail.com", 
