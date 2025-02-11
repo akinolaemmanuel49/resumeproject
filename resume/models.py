@@ -13,7 +13,11 @@ class Resume(models.Model):
     email = models.EmailField(_("Email Address"))
     phone = models.CharField(_("Phone Number"), max_length=15)
     image = models.ImageField(
-        _("Resume Picture"), upload_to="images/resumes", blank=True, null=True
+        _("Resume Picture"),
+        upload_to="images/resumes",
+        blank=True,
+        null=True,
+        max_length=500,
     )
     created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
