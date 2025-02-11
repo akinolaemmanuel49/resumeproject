@@ -85,4 +85,5 @@ def send_recover_password_mail(user_profile, recipient: EmailStr, variables: Dic
         )
     }
     response = requests.post(endpoint, auth=auth, data=data)
+    print(response)
     return response

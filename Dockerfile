@@ -6,13 +6,6 @@ ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE resumeproject.settings
 ENV SECRET_KEY "secret-key"
 
-# Environment variables for email. Replace with appropriate values.
-ENV BASE_URL http://127.0.0.1
-ENV MAILGUN_API_KEY <MAILGUN_API_KEY>
-ENV MAILGUN_DOMAIN_NAME <MAILGUN_DOMAIN_NAME>
-ENV MAILGUN_POSTMASTER <MAILGUN_POSTMASTER>
-ENV MAILGUN_YOU <MAILGUN_YOU>
-
 # Create and set the working directory
 WORKDIR /app
 
