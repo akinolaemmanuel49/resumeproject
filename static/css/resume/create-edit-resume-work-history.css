@@ -4,7 +4,7 @@
     align-items: center;
 }
 
-.form-add-resume-work-history {
+.form-create-edit-resume-work-history {
     width: 300px;
 }
 
@@ -13,44 +13,44 @@ body {
     height: 100%;
 }
 
-.form-add-resume-work-history {
+.form-create-edit-resume-work-history {
     max-width: 330px;
     padding: 0.25rem;
     min-height: 576px;
     height: inherit;
 }
 
-.form-add-resume-work-history .form-floating:focus-within {
+.form-create-edit-resume-work-history .form-floating:focus-within {
     z-index: 2;
 }
 
-.form-add-resume-work-history #floatingOrganizationName {
+.form-create-edit-resume-work-history #floatingOrganizationName {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.form-add-resume-work-history #floatingStartDate {
+.form-create-edit-resume-work-history #floatingStartDate {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-add-resume-work-history #floatingEndDate {
+.form-create-edit-resume-work-history #floatingEndDate {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-add-resume-work-history #floatingPosition {
+.form-create-edit-resume-work-history #floatingPosition {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-add-resume-work-history #floatingJobDescription {
+.form-create-edit-resume-work-history #floatingDescription {
     margin-bottom: -1px;
-    border-radius: 0;
+    border-radius: 0 !important;
 }
 
-.form-add-resume-work-history #deleteWorkHistoryItemButton {
+.form-create-edit-resume-work-history #deleteWorkHistoryItemButton {
     margin-bottom: 25px;
     border-top-right-radius: 0;
     border-top-left-radius: 0;

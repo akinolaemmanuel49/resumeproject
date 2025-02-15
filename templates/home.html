@@ -98,10 +98,12 @@
           <a class="nav-link fw-bold py-1 px-0 theme-auto" href="{% url 'user:profile-view' %}">Dashboard</a>
           <form method="post" action="{% url 'auth:logout-view' %}">
             {% csrf_token %}
-            <button type="submit" class="nav-link fw-bold py-1 px-0 theme-auto">
+            <a>
+              <button type="submit" class="nav-link fw-bold py-1 px-0 theme-auto">
                 Logout
-            </button>
-        </form>
+              </button>
+            </a>
+          </form>
         </nav>
         {% else %}
         <nav class="nav nav-masthead justify-content-center float-md-end">
@@ -137,7 +139,8 @@
     </main>
 
     <footer class="mt-auto text-white-50">
-      <p>Resume builder by <a href="https://github.com/akinolaemmanuel49" target="_blank" class="text-white">@akinolaemmanuel49</a>.</p>
+      <p>Resume builder by <a href="https://github.com/akinolaemmanuel49" target="_blank"
+          class="text-white">@akinolaemmanuel49</a>.</p>
     </footer>
   </div>
   <script src="{% static 'dist/js/bootstrap.min.js' %}"></script>

@@ -1,0 +1,100 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/resume/create-edit-resume-work-history.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form %}
+<form method="post"
+    action="{% if action == 'Create' %} {% url 'resume:create-work-history-view' %}  {% else %} {% url 'resume:edit-work-history-view' resume_id=resume.id %} {% endif %}"
+    class="form-create-edit-resume-work-history" enctype="multipart/form-data" data-resume-id="{{ resume.id }}">
+    {% block formContent %}
+    {% csrf_token %}
+    <h1 class="h3 mb-3 fw-normal">{{ action }} Resume Work History</h1>
+
+    {% if work_histories %}
+    <div id="workHistory">
+        {% for work_history in work_histories %}
+        <div class="work-history-item">
+            <input type="hidden" name="work-history-id" value="{{ work_history.id }}">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingOrganizationName" placeholder="Organization Name"
+                    name="organization_name" aria-required="true" value="{{ work_history.name }}">
+                <label for="floatingOrganizationName">Organization Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingStartDate" placeholder="MM/YYYY" name="start_date"
+                    aria-required="true" pattern="(0[1-9]|1[0-2])/\d{4}" title="Format: MM/YYYY"
+                    value="{{ work_history.start_date }}">
+                <label for="floatingStartDate">Start Date (MM/YYYY)</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingEndDate" placeholder="MM/YYYY" name="end_date"
+                    aria-required="false" pattern="(0[1-9]|1[0-2])/\d{4}" title="Format: MM/YYYY"
+                    value="{{ work_history.end_date }}">
+                <label for="floatingEndDate">End Date (MM/YYYY)</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingPosition" placeholder="Position" name="position"
+                    aria-required="true" value="{{ work_history.position }}">
+                <label for="floatingPosition">Position</label>
+            </div>
+            <div class="form-floating">
+                <textarea class="form-control" id="floatingDescription" placeholder="Description" name="description"
+                    aria-required="false">{{ work_history.description }}</textarea>
+                <label for="floatingDescription">Description</label>
+            </div>
+            <button class="btn btn-danger delete-work-history-button" id="deleteWorkHistoryItemButton"
+                type="button">Delete
+                #<span class="work-history-item-number">1</span></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div id="workHistory">
+        <div class="work-history-item">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingOrganizationName" placeholder="Organization Name"
+                    name="organization_name" aria-required="true">
+                <label for="floatingOrganizationName">Organization Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingStartDate" placeholder="MM/YYYY" name="start_date"
+                    aria-required="true" pattern="(0[1-9]|1[0-2])/\d{4}" title="Format: MM/YYYY">
+                <label for="floatingStartDate">Start Date (MM/YYYY)</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingEndDate" placeholder="MM/YYYY" name="end_date"
+                    aria-required="true" pattern="(0[1-9]|1[0-2])/\d{4}" title="Format: MM/YYYY">
+                <label for="floatingEndDate">End Date (MM/YYYY)</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingPosition" placeholder="Position" name="position"
+                    aria-required="true">
+                <label for="floatingPosition">Position</label>
+            </div>
+            <div class="form-floating">
+                <textarea class="form-control" id="floatingDescription" placeholder="Description"
+                    name="description" aria-required="false"></textarea>
+                <label for="floatingDescription">Description</label>
+            </div>
+            <button class="btn btn-danger delete-work-history-button" id="deleteWorkHistoryItemButton"
+                type="button">Delete
+                #<span class="work-history-item-number">1</span></button>
+        </div>
+    </div>
+    {% endif %}
+
+    <p class="error-message">{{ error_message }}</p>
+
+    <button class="btn btn-primary w-100 py-2 add-new-work-history-button" id="addNewWorkHistoryItemButton"
+        type="button">Add</button>
+    <button class="btn btn-primary w-100 py-2 submit-work-history-button" id="submitWorkHistoryButton"
+        type="submit">Submit</button>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+    {% endblock %}
+</form>
+
+<script src="{% static 'js/resume/create-edit-resume-work-history.js' %}"></script>
+{% endblock %}

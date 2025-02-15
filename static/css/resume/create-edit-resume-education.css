@@ -4,7 +4,7 @@
     align-items: center;
 }
 
-.form-add-resume-skills {
+.form-create-edit-resume-education {
     width: 300px;
 }
 
@@ -13,48 +13,58 @@ body {
     height: 100%;
 }
 
-.form-add-resume-skills {
+.form-create-edit-resume-education {
     max-width: 330px;
     padding: 0.25rem;
     min-height: 576px;
     height: inherit;
 }
 
-.form-add-resume-skills .form-floating:focus-within {
+.form-create-edit-resume-education .form-floating:focus-within {
     z-index: 2;
 }
 
-.form-add-resume-skills #floatingName {
+.form-create-edit-resume-education #floatingInstitutionName {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.form-add-resume-skills #floatingSkillLevel {
+.form-create-edit-resume-education #floatingStartDate {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-add-resume-skills #deleteSkillItemButton {
+.form-create-edit-resume-education #floatingEndDate {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-create-edit-resume-education #floatingDegree {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+
+.form-create-edit-resume-education #deleteEducationItemButton {
     margin-bottom: 25px;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     width: 100%;
 }
 
-.delete-skill-item {
+.delete-education-item {
     color: red;
     text-decoration: none;
 }
 
-.add-new-skill-button {
+.add-new-education-button {
     margin-bottom: -1px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));
 }
 
-.submit-skills-button {
+.submit-education-button {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));
