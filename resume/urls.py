@@ -1,37 +1,125 @@
 from django.urls import path
 
 from resume.views import (
-    AddEducationView,
-    AddResumeSkillView,
-    AddResumeSocialsView,
-    AddWorkHistoryView,
-    CreateResumeView,
+    CreateEducationView,
+    CreateResumeSkillView,
+    CreateWorkHistoryView,
     DeleteResumeAction,
+    DeleteResumeEducationAction,
+    DeleteResumeSocialAction,
+    DeleteResumeWorkHistoryAction,
     DownloadResumeAction,
-    ResumePDFView,
-    ResumeView,
+    ResumeDetailPDFView,
+    ResumeDetailView,
+    CreateResumeSocialsView,
+    UpdateEducationView,
+    UpdateResumeSkillView,
+    UpdateResumeSocialsView,
+    CreateResumeView,
+    UpdateResumeView,
     ResumesView,
+    UpdateWorkHistoryView,
+    delete_skill,
+    delete_skill_group,
 )
 
 
 app_name = "resume"
 
 urlpatterns = [
-    path("create/", CreateResumeView.as_view(), name="create-resume-view"),
-    path("create/socials/", AddResumeSocialsView.as_view(), name="add-resume-socials"),
-    path("create/education/", AddEducationView.as_view(), name="add-resume-education"),
+    path(
+        "create/",
+        CreateResumeView.as_view(),
+        name="create-resume-view",
+    ),
+    path(
+        "edit/<int:resume_id>/",
+        UpdateResumeView.as_view(),
+        name="edit-resume-view",
+    ),
+    path(
+        "create/socials/",
+        CreateResumeSocialsView.as_view(),
+        name="create-socials-view",
+    ),
+    path(
+        "edit/socials/<int:resume_id>/",
+        UpdateResumeSocialsView.as_view(),
+        name="edit-socials-view",
+    ),
+    path(
+        "<int:resume_id>/delete/socials/<int:social_id>/",
+        DeleteResumeSocialAction.as_view(),
+        name="delete-social",
+    ),
+    path(
+        "create/education/",
+        CreateEducationView.as_view(),
+        name="create-education-view",
+    ),
+    path(
+        "edit/education/<int:resume_id>/",
+        UpdateEducationView.as_view(),
+        name="edit-education-view",
+    ),
+    path(
+        "<int:resume_id>/delete/education/<int:education_id>/",
+        DeleteResumeEducationAction.as_view(),
+        name="delete-education",
+    ),
     path(
         "create/work-history/",
-        AddWorkHistoryView.as_view(),
-        name="add-resume-work-history",
+        CreateWorkHistoryView.as_view(),
+        name="create-work-history-view",
     ),
-    path("create/skill/", AddResumeSkillView.as_view(), name="add-resume-skills"),
-    path("resumes/", ResumesView.as_view(), name="resumes-view"),
-    path("<int:id>/", ResumeView.as_view(), name="resume-view"),
-    path("<int:id>/delete/", DeleteResumeAction.as_view(), name="delete-resume-action"),
+    path(
+        "edit/work-history/<int:resume_id>/",
+        UpdateWorkHistoryView.as_view(),
+        name="edit-work-history-view",
+    ),
+    path(
+        "<int:resume_id>/delete/work-history/<int:work_history_id>/",
+        DeleteResumeWorkHistoryAction.as_view(),
+        name="delete-work-history",
+    ),
+    path(
+        "create/skill/",
+        CreateResumeSkillView.as_view(),
+        name="create-skill-view",
+    ),
+    path(
+        "edit/skill/<int:resume_id>/",
+        UpdateResumeSkillView.as_view(),
+        name="edit-skill-view",
+    ),
+    path(
+        "delete/skill/<int:skill_id>/",
+        delete_skill,
+        name="delete-skill",
+    ),
+    path(
+        "delete/skill-group/<int:group_id>/",
+        delete_skill_group,
+        name="delete-skill-group",
+    ),
+    path(
+        "resumes/",
+        ResumesView.as_view(),
+        name="resumes-view",
+    ),
+    path(
+        "<int:id>/view",
+        ResumeDetailView.as_view(),
+        name="resume-detail-view",
+    ),
+    path(
+        "<int:id>/delete/",
+        DeleteResumeAction.as_view(),
+        name="delete-resume-action",
+    ),
     path(
         "<int:id>/preview/",
-        ResumePDFView.as_view(),
+        ResumeDetailPDFView.as_view(),
         name="preview-pdf-resume-view",
     ),
     path(

@@ -129,11 +129,51 @@
         .skills-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
+            gap: 5px;
+        }
+
+        .skill-group {
+            margin-bottom: 5px;
+            padding: 5px;
+            background-color: #f8f9fa;
+            border-left: 5px solid #007bff;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .skill-group-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .skill-items {
+            display: block;
+            margin-top: 10px;
         }
 
         .skill-badge {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 5px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        } */
+
+        /* .skill-badge {
             display: inline-block;
             background: #007bff;
             color: white;
@@ -143,7 +183,7 @@
             white-space: nowrap;
             margin-bottom: 5px;
             margin-left: 5px;
-        }
+        } */
 
         .work-history ul {
             list-style-type: disc;
@@ -153,7 +193,6 @@
         .work-history li {
             margin-bottom: 5px;
         }
-
 
         /* Conditional Download Link */
         .conditional-button {
@@ -209,7 +248,7 @@
                 <div>
                     <div class="summary-section">
                         <h3 class="section-title">SUMMARY</h3>
-                        <p>{{ resume.description }}</p>
+                        <p>{{ resume.summary }}</p>
                     </div>
 
                     <h3 class="section-title">EDUCATION</h3>
@@ -218,7 +257,7 @@
                         <li>
                             <p class="bold">{{ education.institution }}</p>
                             <p>{{ education.degree }}</p>
-                            <p>{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</p>
+                            <p>{{ education.start_date }} - {{ education.end_date }}</p>
                         </li>
                         {% endfor %}
                     </ul>
@@ -229,13 +268,13 @@
                         <li>
                             <p class="bold">{{ work_history.name }}</p>
                             <p><u>{{ work_history.position }}</u></p>
-                            <p><u>{{ work_history.start_date|date:"M Y" }} -
-                                    {% if work_history.end_date %}{{ work_history.end_date|date:"M Y" }}
+                            <p><u>{{ work_history.start_date }} -
+                                    {% if work_history.end_date %}{{ work_history.end_date }}
                                     {% else %}Current{% endif %}
                                 </u></p>
                             <ul>
-                                {% for line in work_history.job_description.splitlines %}
-                                <li class="job-description-item">{{ line }}</li>
+                                {% for line in work_history.description.splitlines %}
+                                <li class="description-item">{{ line }}</li>
                                 {% endfor %}
                             </ul>
                         </li>
@@ -244,12 +283,20 @@
 
                 </div>
 
-                <!-- Right Column (Skills) -->
+                <!-- Right Column -->
                 <div>
-                    <h3 class="section-title">SKILLS</h3>
+                    <h3>Skills</h3>
                     <div class="skills-list">
-                        {% for skill in resume.skill_set.all %}
-                        <span class="skill-badge">{{ skill.name }}</span>
+                        <!-- Grouped Skills -->
+                        {% for skill_group in skill_groups %}
+                        <div class="skill-group">
+                            <h4 class="skill-group-title">{{ skill_group.name }}</h4>
+                            <div class="skill-items">
+                                {% for skill in skill_group.skills.all %}
+                                <span class="skill-badge">{{ skill.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>

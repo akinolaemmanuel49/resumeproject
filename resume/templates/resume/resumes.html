@@ -13,7 +13,7 @@
             <ul class="resume-item">
                 {% for resume in user_resumes %}
                 <li>
-                    <a class="resume-title" href="{% url 'resume:resume-view' id=resume.id %}">
+                    <a class="resume-title" href="{% url 'resume:resume-detail-view' id=resume.id %}">
                         <p>{{ resume.title }}</p>
                     </a>
                     <div class="resume-actions">

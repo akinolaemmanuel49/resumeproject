@@ -1,0 +1,67 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/resume/create-edit-resume-socials.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form %}
+<form method="post"
+    action="{% if action == 'Create' %} {% url 'resume:create-socials-view' %} {% else %} {% url 'resume:edit-socials-view' resume_id=resume.id %} {% endif %}"
+    class="form-create-edit-resume-socials" enctype="multipart/form-data" data-resume-id="{{ resume.id }}">
+    {% csrf_token %}
+    <h1 class="h3 mb-3 fw-normal">{{ action }} Resume Socials</h1>
+
+    {% if socials %}
+    <div id="socials">
+        {% for social in socials %}
+        <div class="social-item">
+            <input type="hidden" name="social-id" value="{{ social.id }}">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingName" placeholder="Social Name" name="name"
+                    aria-required="true" value="{{ social.name }}">
+                <label for="floatingName">Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="url" class="form-control" id="floatingURL" placeholder="URL" name="url"
+                    aria-required="true" value="{{ social.url }}">
+                <label for="floatingURL">URL</label>
+            </div>
+            <button class="btn btn-danger delete-social-button" id="deleteSocialItemButton" type="button">Delete #<span
+                    class="social-item-number">1</span></button>
+            <!-- <span class="social-item-number">1</span> -->
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div id="socials">
+        <div class="social-item">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingName" placeholder="Social Name" name="name"
+                    aria-required="true">
+                <label for="floatingName">Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="url" class="form-control" id="floatingURL" placeholder="URL" name="url"
+                    aria-required="true">
+                <label for="floatingURL">URL</label>
+            </div>
+            <button class="btn btn-danger delete-social-button" id="deleteSocialItemButton" type="button">Delete #<span
+                    class="social-item-number">1</span></button>
+            <!-- <span class="social-item-number">1</span> -->
+        </div>
+    </div>
+    {% endif %}
+    <p class="error-message">{{ error_message }}</p>
+    <!-- Buttons moved to the bottom -->
+    <div class="form-buttons mt-3">
+        <button class="btn btn-primary w-100 py-2 add-new-social-button" id="addNewSocialItemButton"
+            type="button">Add</button>
+        <button class="btn btn-primary w-100 py-2 submit-socials-button" id="submitSocialsButton"
+            type="submit">Submit</button>
+        <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+    </div>
+</form>
+
+<script src="{% static 'js/resume/create-edit-resume-socials.js' %}"></script>
+{% endblock %}
