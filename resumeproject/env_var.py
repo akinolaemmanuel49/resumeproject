@@ -1,7 +1,7 @@
 from pydantic import EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-ENV_FILE = ".env"
+ENV_FILE = "/etc/secrets/.env" if os.path.exists("/etc/secrets/.env") else ".env"
 
 
 class Settings(BaseSettings):
