@@ -4,7 +4,7 @@
     align-items: center;
 }
 
-.form-create-resume {
+.form-resume {
     width: 300px;
 }
 
@@ -13,55 +13,55 @@ body {
     height: 100%;
 }
 
-.form-create-resume {
+.form-resume {
     max-width: 330px;
     padding: 0.25rem;
     min-height: 576px;
     height: inherit;
 }
 
-.form-create-resume .form-floating:focus-within {
+.form-resume .form-floating:focus-within {
     z-index: 2;
 }
 
-.form-create-resume #floatingTitle {
+.form-resume #floatingTitle {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-#floatingDescription {
+#floatingSummary {
     margin-bottom: -1px;
     border-radius: 0;
     height: 60px;
 }
 
-.form-create-resume #floatingFirstName {
+.form-resume #floatingFirstName {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-create-resume #floatingLastName {
+.form-resume #floatingLastName {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-create-resume #floatingEmail {
+.form-resume #floatingEmail {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-create-resume #floatingPhone {
+.form-resume #floatingPhone {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.form-create-resume #floatingImage {
+.form-resume #floatingImage {
     margin-bottom: -1px;
     border-radius: 0;
 }
 
-.create-resume-submit-button {
+.resume-submit-button {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: calc(2.5rem + calc(var(--bs-border-width) * 2));

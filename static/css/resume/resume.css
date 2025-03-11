@@ -1,101 +1,130 @@
  /* CSS Reset to avoid theme conflicts */
  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
 
-body, html {
-    font-family: 'Arial', sans-serif;
-    background: none !important; /* Remove background from body */
-    color: inherit !important; /* Use inheritable color for body text */
-}
+ body,
+ html {
+     font-family: 'Arial', sans-serif;
+     background: none !important;
+     color: inherit !important;
+     height: 100%;
+ }
 
-.resume-detail {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+ .resume-detail {
+     position: static;
+     background: white;
+     padding: 30px;
+     border-radius: 8px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+     text-align: center;
+ }
 
-.resume-header img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
+ .resume-header img {
+     width: 120px;
+     height: 120px;
+     border-radius: 50%;
+     object-fit: cover;
+     margin-bottom: 10px;
+ }
 
-.contact-details {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 20px;
-}
+ .contact-details {
+     font-size: 14px;
+     color: #555;
+     margin-bottom: 20px;
+ }
 
-.contact-details p {
-    margin: 5px 0;
-}
+ .contact-details p {
+     margin: 5px 0;
+ }
 
-.content-table {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    text-align: left;
-}
+ .content-table {
+     width: 100%;
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     gap: 20px;
+     text-align: left;
+ }
 
-.content-table h3 {
-    color: #2c3e50;
-    margin-bottom: 10px;
-    border-bottom: 2px solid #2c3e50;
-    padding-bottom: 5px;
-}
+ .content-table h3 {
+     color: #2c3e50;
+     margin-bottom: 10px;
+     border-bottom: 2px solid #2c3e50;
+     padding-bottom: 5px;
+ }
 
-.content-table ul {
-    list-style: none;
-    padding: 0;
-}
+ .content-table ul {
+     list-style: none;
+     padding: 0;
+ }
 
-.content-table li {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 5px;
-}
+ .content-table li {
+     margin-bottom: 10px;
+     padding: 10px;
+     background: #f8f9fa;
+     border-radius: 5px;
+ }
 
-.bold {
-    font-weight: bold;
-    color: #007bff;
-}
+ .bold {
+     font-weight: bold;
+     color: #007bff;
+ }
 
-.skills-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+ .skills-list {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 5px;
+ }
 
-.skill-badge {
-    background: #007bff;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-}
+ .skill-group {
+     margin-bottom: 5px;
+     padding: 5px;
+     background-color: #f8f9fa;
+     border-left: 5px solid #007bff;
+     border-radius: 5px;
+     width: 100%;
+     box-sizing: border-box;
+ }
 
-.conditional-button {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #007bff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-}
+ .skill-group-title {
+     font-size: 1.2em;
+     font-weight: bold;
+     color: #333;
+     margin-bottom: 10px;
+ }
 
-.download-button {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
+ .skill-items {
+     display: block;
+     margin-top: 10px;
+ }
+
+ .skill-badge {
+     display: inline-block;
+     background-color: #007bff;
+     color: white;
+     padding: 5px 5px;
+     border-radius: 15px;
+     font-size: 0.9em;
+     font-weight: bold;
+     margin-right: 5px;
+     margin-bottom: 5px;
+ }
+
+ .conditional-button {
+     position: fixed;
+     bottom: 20px;
+     left: 50%;
+     transform: translateX(-50%);
+     background-color: #007bff;
+     padding: 10px 20px;
+     border-radius: 5px;
+     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+ }
+
+ .download-button {
+     color: white;
+     text-decoration: none;
+     font-weight: bold;
+ }

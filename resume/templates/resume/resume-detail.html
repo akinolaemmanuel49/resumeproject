@@ -21,9 +21,9 @@
                 <h2 class="owner-name">{{ resume.first_name }} {{ resume.last_name }}</h2>
                 <h6>{{ resume.title }}</h6>
                 <p>{{ resume.phone }} | <a href="mailto:{{ resume.email }}">{{ resume.email }}</a>
-                {% for social in resume.social_set.all %}
-                | <a href="{{ social.url }}">{{ social.url }}</a>
-                {% endfor %}
+                    {% for social in resume.social_set.all %}
+                    | <a href="{{ social.url }}">{{ social.url }}</a>
+                    {% endfor %}
                 </p>
             </div>
 
@@ -33,7 +33,7 @@
                 <div>
                     <div class="summary-section">
                         <h3>Summary</h3>
-                        <p>{{ resume.description|linebreaks }}</p>
+                        <p>{{ resume.summary }}</p>
                     </div>
 
                     <h3>Work Experience</h3>
@@ -42,9 +42,9 @@
                         <li>
                             <p class="bold">{{ work_history.name }}</p>
                             <p>{{ work_history.position }}</p>
-                            <p>{{ work_history.start_date|date:"M Y" }} - {% if work_history.end_date %}
-                                {{ work_history.end_date|date:"M Y" }}{% else %}Current{% endif %}</p>
-                            <p>{{ work_history.job_description|linebreaks }}</p>
+                            <p>{{ work_history.start_date }} - {% if work_history.end_date %}
+                                {{ work_history.end_date }}{% else %}Current{% endif %}</p>
+                            <p>{{ work_history.description|linebreaks }}</p>
                         </li>
                         {% endfor %}
                     </ul>
@@ -55,7 +55,7 @@
                         <li>
                             <p class="bold">{{ education.institution }}</p>
                             <p>{{ education.degree }}</p>
-                            <p>{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y" }}</p>
+                            <p>{{ education.start_date }} - {{ education.end_date }}</p>
                         </li>
                         {% endfor %}
                     </ul>
@@ -65,13 +65,24 @@
                 <div>
                     <h3>Skills</h3>
                     <div class="skills-list">
-                        {% for skill in resume.skill_set.all %}
-                        <span class="skill-badge">{{ skill.name }} - {{ skill.get_level_display }}</span>
+                        <!-- Grouped Skills -->
+                        {% for skill_group in skill_groups %}
+                        <div class="skill-group">
+                            <h4 class="skill-group-title">{{ skill_group.name }}</h4>
+                            <div class="skill-items">
+                                {% for skill in skill_group.skills.all %}
+                                <span class="skill-badge">{{ skill.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
     {% if is_preview == True %}
     <div class="conditional-button">

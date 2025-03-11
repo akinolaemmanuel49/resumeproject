@@ -7,7 +7,7 @@ from user.models import User
 # Create your models here.
 class Resume(models.Model):
     title = models.CharField(_("Title"), max_length=255)
-    description = models.TextField(_("Description"), blank=True, null=True)
+    summary = models.TextField(_("Summary"), blank=True, null=True)
     first_name = models.CharField(_("First Name"), max_length=255)
     last_name = models.CharField(_("Last Name"), max_length=255)
     email = models.EmailField(_("Email Address"))
@@ -36,8 +36,8 @@ class Social(models.Model):
 
 class Education(models.Model):
     institution = models.CharField(_("Institution Name"), max_length=255)
-    start_date = models.DateField(_("Start Date"))
-    end_date = models.DateField(_("End Date"))
+    start_date = models.CharField(_("Start Date"), max_length=7)  # Format: MM/YYYY
+    end_date = models.CharField(_("End Date"), max_length=7)  # Format: MM/YYYY
     degree = models.CharField(_("Degree"), max_length=255)
 
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
@@ -45,10 +45,12 @@ class Education(models.Model):
 
 class WorkHistory(models.Model):
     name = models.CharField(_("Organization Name"), max_length=255)
-    start_date = models.DateField(_("Start Date"))
-    end_date = models.DateField(_("End Date"), blank=True, null=True)
+    start_date = models.CharField(_("Start Date"), max_length=7)  # Format: MM/YYYY
+    end_date = models.CharField(
+        _("End Date"), max_length=7, blank=True, null=True
+    )  # Optional
     position = models.CharField(_("Position"), max_length=255)
-    job_description = models.TextField(_("Job Description"), blank=True, null=True)
+    description = models.TextField(_("Description"), blank=True, null=True)
     created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
 
@@ -58,15 +60,29 @@ class WorkHistory(models.Model):
         verbose_name_plural = "Work Histories"
 
 
+class SkillGroup(models.Model):
+    name = models.CharField(_("Skill Group Name"), max_length=255)
+    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
+
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name="skill_groups")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "resume"], name="unique_skillgroup_per_resume"
+            )
+        ]
+
+
 class Skill(models.Model):
-    SKILL_CHOICES = (
-        ("beginner", "Beginner"),
-        ("intermediate", "Intermediate"),
-        ("expert", "Expert"),
-    )
     name = models.CharField(_("Skill Name"), max_length=255)
-    level = models.CharField(_("Level"), choices=SKILL_CHOICES, max_length=15)
     created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified At"), auto_now=True)
 
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+    skill_group = models.ForeignKey(
+        SkillGroup,
+        on_delete=models.CASCADE,
+        related_name="skills",  # Explicitly define the related_name
+    )

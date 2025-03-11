@@ -103,21 +103,25 @@ body {
  * Header
  */
 
-.nav-masthead .nav-link {
+.nav-masthead .nav-link button{
   color: rgba(255, 255, 255, .5);
   border-bottom: .25rem solid transparent;
 }
 
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link:focus {
+.nav-masthead .nav-link:hover button,
+.nav-masthead .nav-link:focus button{
   border-bottom-color: rgba(255, 255, 255, .25);
 }
 
-.nav-masthead .nav-link+.nav-link {
+.nav-masthead .nav-link+.nav-link button{
   margin-left: 1rem;
 }
 
-.nav-masthead .active {
+button {
+  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+}
+
+.nav-masthead .active button {
   color: #fff;
   border-bottom-color: #fff;
 }

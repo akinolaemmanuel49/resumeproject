@@ -2,53 +2,59 @@
 {% load static %}
 
 {% block customStyle %}
-<link href="{% static 'css/resume/create-resume.css' %}" rel="stylesheet">
+<link href="{% static 'css/resume/create-edit-resume.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block form %}
-<form method="post" action="{% url 'resume:create-resume-view' %}" class="form-create-resume" enctype="multipart/form-data">
+<form method="post"
+    action="{% if action == 'Create' %} {% url 'resume:create-resume-view' %} {% else %} {% url 'resume:edit-resume-view' id=resume.id %} {% endif %}"
+    class="form-resume" enctype="multipart/form-data">
     {% block formContent %}
     {% csrf_token %}
     <!-- <img class="mb-4" src="{% static 'brand/bootstrap-logo.svg' %}" alt="" width="72" height="57"> -->
-    <h1 class="h3 mb-3 fw-normal">Create New Resume</h1>
+    <h1 class="h3 mb-3 fw-normal">{{ action }} Resume</h1>
 
     <div class="form-floating">
         <input type="text" class="form-control" id="floatingTitle" placeholder="Resume Title" name="title"
-            aria-required="true">
+            aria-required="true" value="{% if action == 'Update' %} {{ resume.title }} {% endif %}">
         <label for="floatingTitle">Title</label>
     </div>
     <div class="form-floating">
         <textarea type="" class="form-control" id="floatingSummary" placeholder="Summary" name="summary"
-            aria-required="true"></textarea>
+            aria-required="true">{% if action == 'Update' %} {{ resume.summary }} {% endif %}</textarea>
         <label for="floatingSummary">Summary</label>
     </div>
     <div class="form-floating">
         <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="first_name"
-            aria-required="true" value="{{ user_profile.first_name }}">
+            aria-required="true"
+            value="{% if action == 'Update' %} {{ resume.first_name }} {% else %} {{ user_profile.first_name }} {% endif %}">
         <label for="floatingFirstName">First Name</label>
     </div>
     <div class="form-floating">
         <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" name="last_name"
-            aria-required="true" value="{{ user_profile.last_name }}">
+            aria-required="true"
+            value="{% if action == 'Update' %} {{ resume.last_name }} {% else %} {{ user_profile.last_name }} {% endif %}">
         <label for="floatingLastName">Last Name</label>
     </div>
     <div class="form-floating">
         <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" name="email"
-            aria-required="true" value="{{ user_profile.email }}">
+            aria-required="true"
+            value="{% if action == 'Update' %} {{ resume.email }} {% else %} {{ user_profile.email }} {% endif %}">
         <label for="floatingEmail">Email address</label>
     </div>
     <div class="form-floating">
         <input type="tel" class="form-control" id="floatingPhone" placeholder="Phone Number" name="phone"
-            aria-required="true" value="{{ user_profile.phone }}">
+            aria-required="true"
+            value="{% if action == 'Update' %} {{ resume.phone }} {% else %} {{ user_profile.phone }} {% endif %}">
         <label for="floatingPhone">Phone Number</label>
     </div>
     <div class="form-floating">
         <input type="file" class="form-control" id="floatingImage" accept="image/*" name="image" aria-required="false"
-            value="{{ user_profile.image }}">
+            value="{% if action == 'Update' %} {{ resume.image }} {% else %} {{ user_profile.image }} {% endif %}">
         <label for="floatingImage">Profile Image</label>
     </div>
 
-    <button class="btn btn-primary w-100 py-2 create-resume-submit-button" type="submit">Create Resume</button>
+    <button class="btn btn-primary w-100 py-2 resume-submit-button" type="submit">{{ action }} Resume</button>
     <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
     {% endblock %}
 </form>

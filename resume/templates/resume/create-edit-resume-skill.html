@@ -1,0 +1,84 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block customStyle %}
+<link href="{% static 'css/resume/create-edit-resume-skill.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form %}
+<form method="post"
+    action="{% if action == 'Create' %} {% url 'resume:create-skill-view' %} {% else %} {% url 'resume:edit-skill-view' resume_id=resume.id %} {% endif %}"
+    class="form-create-edit-resume-skills" enctype="multipart/form-data" data-resume-id="{{ resume.id }}">
+    {% block formContent %}
+    {% csrf_token %}
+    <h1 class="h3 mb-3 fw-normal">{{ action }} Resume Skills</h1>
+
+    <div id="skillGroupsContainer">
+        {% if skill_groups %}
+        {% for group in skill_groups %}
+        <div class="skill-group-item" data-group-id="{{ group.id }}">
+            <input type="hidden" name="skill-group-id" value="{{ group.id }}">
+
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingSkillGroupName-{{ group.id }}"
+                    placeholder="Skill Group Name" name="group_name" value="{{ group.name }}" aria-required="true">
+                <label for="floatingSkillGroupName-{{ group.id }}">Skill Group Name</label>
+            </div>
+
+            <div id="skillsInGroup{{ group.id }}">
+                {% for skill in group.skills.all %}
+                <div class="skill-item" data-skill-id="{{ skill.id }}">
+                    <input type="hidden" name="skill-id" value="{{ skill.id }}">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="floatingSkillName-{{ skill.id }}"
+                            placeholder="Skill Name" name="skill_name" value="{{ skill.name }}" aria-required="true">
+                        <label for="floatingSkillName-{{ skill.id }}">Skill Name</label>
+                    </div>
+
+                    {% if action == 'Edit' %}
+                    <button class="btn btn-danger delete-skill-button" type="button">Delete Skill</button>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Delete Skill Group Button -->
+            <button class="btn btn-danger delete-skill-group-button" type="button">Delete Skill Group</button>
+
+            <button class="btn btn-primary w-100 py-2 add-new-skill-button" data-group-id="{{ group.id }}"
+                type="button">Add Skill to Group</button>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="skill-group-item" data-group-id="0">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingSkillGroupName-0" placeholder="Skill Group Name"
+                    name="group_name" aria-required="true">
+                <label for="floatingSkillGroupName-0">Skill Group Name</label>
+            </div>
+
+            <div id="skillsInGroup0">
+                <div class="skill-item" data-skill-id="0">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="floatingSkillName-0" placeholder="Skill Name"
+                            name="skill_name" aria-required="true">
+                        <label for="floatingSkillName-0">Skill Name</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary w-100 py-2 add-new-skill-button" data-group-id="0" type="button">Add
+                Skill</button>
+            <!-- Delete Skill Group Button -->
+            <button class="btn btn-danger delete-skill-group-button" type="button">Delete Skill Group</button>
+        </div>
+        {% endif %}
+    </div>
+
+    <button class="btn btn-primary w-100 py-2 submit-skill-button" type="submit">Submit</button>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; {% now "Y" %}</p>
+    {% endblock %}
+</form>
+
+<script src="{% static 'js/resume/create-edit-resume-skill.js' %}"></script>
+{% endblock %}

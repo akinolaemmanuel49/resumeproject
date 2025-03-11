@@ -1,0 +1,206 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Form Styling */
+.form-create-edit-resume-skills {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+/* Input Fields */
+.form-floating {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+label {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    background-color: #fff;
+    padding: 0 4px;
+    font-size: 14px;
+    color: #555;
+    transition: 0.2s;
+}
+
+.form-floating input:focus + label,
+.form-floating textarea:focus + label,
+.form-floating input:not(:placeholder-shown) + label,
+.form-floating textarea:not(:placeholder-shown) + label {
+    top: -8px;
+    font-size: 12px;
+    color: #007bff;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+/* Skill Group and Item Styling */
+.skill-group-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.skill-group-item input {
+    width: calc(100% - 24px);
+}
+
+.delete-skill-group-button {
+    margin-top: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.delete-skill-group-button:hover {
+    background-color: #c82333;
+}
+
+/* Skill Item Styling */
+.skill-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.skill-item input {
+    width: calc(100% - 24px);
+}
+
+/* Add New Skill Button */
+.add-new-skill-button {
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.add-new-skill-button:hover {
+    background-color: #0056b3;
+}
+
+/* Delete Skill Button */
+.delete-skill-button {
+    margin-top: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.delete-skill-button:hover {
+    background-color: #c82333;
+}
+
+/* Error Message */
+.error-message {
+    color: #dc3545;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .form-create-edit-resume-skills {
+        padding: 15px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+
+    .btn-primary, .btn-danger {
+        font-size: 14px;
+    }
+
+    .delete-skill-group-button,
+    .add-new-skill-button,
+    .delete-skill-button {
+        padding: 8px;
+    }
+}
