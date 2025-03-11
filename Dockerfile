@@ -27,12 +27,12 @@ COPY . /app/
 # Expose Render's dynamically assigned port
 EXPOSE $PORT
 
-# Load secrets from Render's Secret Files and start the server
-CMD ["sh", "-c", "
+# Start the application with secret loading support
+CMD ["/bin/sh", "-c", "
     if [ -f /etc/secrets/.env ]; then
-        export \$(grep -v '^#' /etc/secrets/.env | xargs);
-    fi &&
-    python manage.py collectstatic --noinput &&
-    python manage.py migrate &&
+        export $(grep -v '^#' /etc/secrets/.env | xargs);
+    fi;
+    python manage.py collectstatic --noinput && \
+    python manage.py migrate && \
     exec gunicorn --bind 0.0.0.0:$PORT resumeproject.wsgi:application --workers=4
 "]
