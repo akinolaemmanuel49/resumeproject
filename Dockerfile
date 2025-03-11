@@ -29,6 +29,9 @@ COPY . /app/
 # 🔹 Inject secrets from Render’s `/etc/secrets/.env` during build
 RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cat /etc/secrets/.env
 
+# Manually export environment variables to avoid key-value map issues
+RUN export $(cat /etc/secrets/.env | xargs)
+
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
